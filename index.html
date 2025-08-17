@@ -3,26 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLS & M3U8 Oynatıcı</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Ana Sayfa - Gömülü Yayın</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .iframe-container {
+            border: 2px solid #ccc;
+            width: 80%;
+            max-width: 900px;
+            margin: 20px auto;
+            /* Yüksekliği genişliğe oranla (16:9) ayarlamak için güzel bir teknik */
+            position: relative;
+            padding-top: 45%; /* 9 / 16 * 80% (genişlik) */
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>HLS & M3U8 Yayın Oynatıcı</h1>
-        <p>Oynatmak istediğiniz .m3u8 yayın linkini aşağıya yapıştırın ve Oynat düğmesine tıklayın.</p>
-        
-        <div class="input-container">
-            <input type="text" id="m3u8-url" placeholder="https://ornek.com/yayin.m3u8">
-            <button id="play-button">Oynat</button>
-        </div>
-        
-        <video id="video-player" controls></video>
+    <h1>HLS Yayın Sitemize Hoş Geldiniz!</h1>
+    <p>Aşağıda canlı yayınımızı izleyebilirsiniz.</p>
+
+    <div class="iframe-container">
+        <iframe
+            src="oynatici.html"
+            allow="autoplay; fullscreen"
+            scrolling="no">
+        </iframe>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
-    <script src="script.js"></script>
+    <p>Bu yayın, bir iframe içerisinde gösterilmektedir.</p>
 
 </body>
 </html>
