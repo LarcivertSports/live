@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Oynatıcı</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Kaydırma çubuklarını gizler */
+            background-color: #000; /* Video yüklenirken arka plan siyah olur */
+        }
+        #video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <video id="video" controls autoplay></video>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <script>
+        // JavaScript kodumuzun başlangıcı
+        document.addEventListener('DOMContentLoaded', function () {
+            // Video elementimizi ID'si üzerinden seçiyoruz
+            var video = document.getElementById('video');
+
+            // BURAYI DEĞİŞTİRİN: Kendi HLS yayın URL'nizi (.m3u8 uzantılı) buraya yapıştırın
+            var videoSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'; // Örnek bir yayın URL'si
+
+            // Tarayıcının HLS.js'i destekleyip desteklemediğini kontrol ediyoruz
+            if (Hls.isSupported()) {
+                var hls = new Hls(); // Yeni bir HLS oynatıcı nesnesi oluşturuyoruz
+                hls.loadSource(videoSrc); // Yayın kaynağını yüklüyoruz
+                hls.attachMedia(video); // Oynatıcıyı video elementimize bağlıyoruz
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    video.play(); // Yayın yüklendiğinde otomatik olarak oynat
+                });
+            }
+            // Eğer tarayıcı (Safari gibi) HLS'i doğal olarak destekliyorsa, doğrudan kaynağı veriyoruz
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', function () {
+                    video.play();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
