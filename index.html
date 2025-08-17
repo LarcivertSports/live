@@ -6,14 +6,48 @@
     <title>Canlı Yayınlar</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; }
-        .stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
+        
+        /* === DÜZENLEME 1: Kartların minimum genişliği 200px'den 150px'e düşürüldü === */
+        .stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
+        
         .stream-card { border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .stream-card h3 { background-color: #f1f1f1; margin: 0; padding: 15px; font-size: 16px; }
+        
+        /* === DÜZENLEME 2: Başlık alanı küçültüldü === */
+        .stream-card h3 { 
+            background-color: #f1f1f1; 
+            margin: 0; 
+            padding: 10px; /* Padding 15px'den 10px'e düşürüldü */
+            font-size: 14px; /* Yazı boyutu 16px'den 14px'e düşürüldü */
+        }
+        
         .logo-container { position: relative; padding-top: 100%; /* 1:1 Oran */ background-color: #f0f0f0; cursor: pointer; }
         .logo-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 10px; box-sizing: border-box; }
-        .logo-container .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background-color: rgba(0, 0, 0, 0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        
+        /* === DÜZENLEME 3: Oynat ikonu ve içindeki üçgen küçültüldü === */
+        .logo-container .play-icon { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 48px; /* 60px'den 48px'e düşürüldü */
+            height: 48px; /* 60px'den 48px'e düşürüldü */
+            background-color: rgba(0, 0, 0, 0.6); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: opacity 0.2s; 
+        }
         .logo-container:hover .play-icon { opacity: 1; }
-        .play-icon::after { content: ''; border-style: solid; border-width: 12px 0 12px 20px; border-color: transparent transparent transparent white; }
+        .play-icon::after { 
+            content: ''; 
+            border-style: solid; 
+            /* Üçgenin boyutu orantılı olarak küçültüldü */
+            border-width: 10px 0 10px 16px; 
+            border-color: transparent transparent transparent white; 
+        }
+        
         .iframe-container { position: relative; padding-top: 56.25%; /* 16:9 Oran */ height: 0; background-color: #000; }
         .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .no-streams { color: #888; }
@@ -41,8 +75,6 @@
                     const card = document.createElement('div');
                     card.className = 'stream-card';
 
-                    // YENİ: Kart içeriği artık logo ve oynatma ikonu
-                    // Gerekli bilgileri data-* attributes ile saklıyoruz
                     card.innerHTML = `
                         <h3>${stream.name}</h3>
                         <div class="logo-container" 
@@ -56,11 +88,9 @@
                 });
             }
 
-            // YENİ: Tıklama olayını tüm gride atıyoruz (Event Delegation)
             streamGrid.addEventListener('click', function(e) {
                 const logoContainer = e.target.closest('.logo-container');
 
-                // Eğer bir logo container'ına tıklandıysa...
                 if (logoContainer) {
                     const url = logoContainer.dataset.streamUrl;
                     const type = logoContainer.dataset.streamType;
@@ -73,7 +103,6 @@
                         iframeSrc = `oynatici.html?url=${encodedUrl}`;
                     }
 
-                    // Tıklanan logoyu bir iframe ile değiştiriyoruz
                     const iframeContainer = document.createElement('div');
                     iframeContainer.className = 'iframe-container';
                     iframeContainer.innerHTML = `
@@ -83,8 +112,6 @@
                             scrolling="no">
                         </iframe>
                     `;
-
-                    // Kartın içindeki logo container'ını yeni iframe container ile değiştir
                     logoContainer.parentNode.replaceChild(iframeContainer, logoContainer);
                 }
             });
