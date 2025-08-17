@@ -9,13 +9,18 @@
         h1, h2 { color: #333; }
         .form-container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         input[type="text"], select { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
+        button { color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 5px; }
+        button:hover { opacity: 0.9; }
+        .add-btn { background-color: #007bff; }
+        .update-btn { background-color: #28a745; }
+        .cancel-btn { background-color: #6c757d; }
         ul { list-style-type: none; padding: 0; }
-        li { background-color: white; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .stream-type { font-size: 12px; background-color: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 10px; margin-left: 10px; }
-        .delete-btn { background-color: #dc3545; font-size: 12px; padding: 5px 10px; }
-        .delete-btn:hover { background-color: #c82333; }
+        li { background-color: white; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .stream-info { flex-grow: 1; margin-right: 10px; }
+        .stream-actions button { font-size: 12px; padding: 5px 10px; }
+        .stream-type { font-size: 12px; background-color: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 10px; }
+        .edit-btn { background-color: #ffc107; color: #212529; }
+        .delete-btn { background-color: #dc3545; }
     </style>
 </head>
 <body>
@@ -23,15 +28,19 @@
     <h1>Yayın Yönetim Paneli</h1>
 
     <div class="form-container">
-        <h2>Yeni Yayın Ekle</h2>
-        <form id="addStreamForm">
+        <h2 id="formTitle">Yeni Yayın Ekle</h2>
+        <form id="streamForm">
             <input type="text" id="streamName" placeholder="Yayın Adı (Örn: Spor Kanalı)" required>
             <input type="text" id="streamUrl" placeholder="Yayın URL'si" required>
             <select id="streamType">
                 <option value="hls">HLS (.m3u8)</option>
                 <option value="iframe">Web Sayfası / Gömülebilir Link</option>
             </select>
-            <button type="submit">Yayını Ekle</button>
+            <div id="buttonGroup">
+                <button type="submit" class="add-btn" id="addBtn">Yayını Ekle</button>
+                <button type="submit" class="update-btn" id="updateBtn" style="display:none;">Yayını Güncelle</button>
+                <button type="button" class="cancel-btn" id="cancelBtn" style="display:none;">İptal</button>
+            </div>
         </form>
     </div>
 
@@ -40,17 +49,53 @@
         </ul>
 
     <script>
-        const form = document.getElementById('addStreamForm');
+        const form = document.getElementById('streamForm');
+        const formTitle = document.getElementById('formTitle');
         const streamNameInput = document.getElementById('streamName');
         const streamUrlInput = document.getElementById('streamUrl');
-        const streamTypeInput = document.getElementById('streamType'); // YENİ
+        const streamTypeInput = document.getElementById('streamType');
         const streamList = document.getElementById('streamList');
+        const addBtn = document.getElementById('addBtn');
+        const updateBtn = document.getElementById('updateBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        // YENİ: Düzenleme modunda olup olmadığımızı ve hangi yayını düzenlediğimizi takip etmek için.
+        // -1 ise ekleme modundayız, 0 veya daha büyük bir sayı ise düzenleme modundayız.
+        let editIndex = -1;
 
         let streams = JSON.parse(localStorage.getItem('streams')) || [];
 
         function saveAndRender() {
             localStorage.setItem('streams', JSON.stringify(streams));
             renderStreams();
+        }
+
+        // YENİ: Formu ekleme veya düzenleme moduna geçiren fonksiyon
+        function setFormMode(mode, index = -1) {
+            if (mode === 'edit') {
+                editIndex = index;
+                const stream = streams[index];
+
+                // Formu düzenlenecek yayının bilgileriyle doldur
+                formTitle.textContent = "Yayını Düzenle";
+                streamNameInput.value = stream.name;
+                streamUrlInput.value = stream.url;
+                streamTypeInput.value = stream.type;
+                
+                // Butonları güncelle
+                addBtn.style.display = 'none';
+                updateBtn.style.display = 'inline-block';
+                cancelBtn.style.display = 'inline-block';
+            } else { // 'add' modu
+                editIndex = -1;
+                formTitle.textContent = "Yeni Yayın Ekle";
+                form.reset(); // Formu temizle
+
+                // Butonları ilk haline getir
+                addBtn.style.display = 'inline-block';
+                updateBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
+            }
         }
 
         function renderStreams() {
@@ -61,14 +106,13 @@
             }
             streams.forEach((stream, index) => {
                 const li = document.createElement('li');
-                // YENİ: Yayın türünü de göster
                 li.innerHTML = `
-                    <span>
-                        <strong>${stream.name}</strong><br>
+                    <div class="stream-info">
+                        <strong>${stream.name}</strong> <span class="stream-type">${stream.type === 'iframe' ? 'Web Sayfası' : 'HLS'}</span><br>
                         <small>${stream.url}</small>
-                    </span>
-                    <div>
-                        <span class="stream-type">${stream.type === 'iframe' ? 'Web Sayfası' : 'HLS'}</span>
+                    </div>
+                    <div class="stream-actions">
+                        <button class="edit-btn" data-index="${index}">Düzenle</button>
                         <button class="delete-btn" data-index="${index}">Sil</button>
                     </div>
                 `;
@@ -80,25 +124,49 @@
             e.preventDefault();
             const name = streamNameInput.value.trim();
             const url = streamUrlInput.value.trim();
-            const type = streamTypeInput.value; // YENİ: Seçilen türü al
+            const type = streamTypeInput.value;
 
-            if (name && url) {
-                // YENİ: Kaydedilen objeye 'type' özelliğini ekle
+            if (!name || !url) return;
+
+            // YENİ: Ekleme mi yoksa güncelleme mi yapacağımızı kontrol ediyoruz
+            if (editIndex === -1) {
+                // Ekleme modundayız
                 streams.push({ name, url, type });
-                streamNameInput.value = '';
-                streamUrlInput.value = '';
-                saveAndRender();
+            } else {
+                // Düzenleme modundayız
+                streams[editIndex] = { name, url, type };
             }
+            
+            saveAndRender();
+            setFormMode('add'); // İşlem sonrası formu ekleme moduna geri al
         });
 
+        // YENİ: İptal butonuna tıklandığında formu sıfırla
+        cancelBtn.addEventListener('click', function() {
+            setFormMode('add');
+        });
+
+        // YENİ: Liste üzerindeki tıklamaları yöneten fonksiyon (Düzenle ve Sil)
         streamList.addEventListener('click', function (e) {
-            if (e.target.classList.contains('delete-btn')) {
-                const index = e.target.getAttribute('data-index');
-                streams.splice(index, 1);
-                saveAndRender();
+            const target = e.target;
+            if (target.classList.contains('delete-btn')) {
+                const index = target.getAttribute('data-index');
+                // Silmeden önce kullanıcıya sor (isteğe bağlı ama önerilir)
+                if (confirm(`"${streams[index].name}" yayınını silmek istediğinizden emin misiniz?`)) {
+                    streams.splice(index, 1);
+                    saveAndRender();
+                    // Eğer silinen yayın düzenlenmekte olan yayınsa, formu sıfırla
+                    if (index == editIndex) {
+                        setFormMode('add');
+                    }
+                }
+            } else if (target.classList.contains('edit-btn')) {
+                const index = target.getAttribute('data-index');
+                setFormMode('edit', parseInt(index));
             }
         });
         
+        // Sayfa ilk yüklendiğinde listeyi ve formu hazırla
         renderStreams();
     </script>
 
