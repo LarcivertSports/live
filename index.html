@@ -6,9 +6,14 @@
     <title>Canlı Yayınlar</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; }
-        .stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
+        .stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
         .stream-card { border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .stream-card h3 { background-color: #f1f1f1; margin: 0; padding: 15px; }
+        .stream-card h3 { background-color: #f1f1f1; margin: 0; padding: 15px; font-size: 16px; }
+        .logo-container { position: relative; padding-top: 100%; /* 1:1 Oran */ background-color: #f0f0f0; cursor: pointer; }
+        .logo-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 10px; box-sizing: border-box; }
+        .logo-container .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background-color: rgba(0, 0, 0, 0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .logo-container:hover .play-icon { opacity: 1; }
+        .play-icon::after { content: ''; border-style: solid; border-width: 12px 0 12px 20px; border-color: transparent transparent transparent white; }
         .iframe-container { position: relative; padding-top: 56.25%; /* 16:9 Oran */ height: 0; background-color: #000; }
         .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .no-streams { color: #888; }
@@ -17,7 +22,7 @@
 <body>
 
     <h1>Canlı Yayınlar</h1>
-    <p>Aşağıdan izlemek istediğiniz yayını seçin.</p>
+    <p>İzlemek için bir kanal logosuna tıklayın.</p>
 
     <div id="streamGrid" class="stream-grid">
         </div>
@@ -26,6 +31,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const streamGrid = document.getElementById('streamGrid');
             const streams = JSON.parse(localStorage.getItem('streams')) || [];
+            // Logo girilmemiş kanallar için varsayılan logo
+            const placeholderLogo = 'https://via.placeholder.com/200x200.png?text=Kanal+Logosu';
 
             if (streams.length === 0) {
                 streamGrid.innerHTML = '<p class="no-streams">Gösterilecek yayın bulunmuyor. Lütfen admin panelinden yayın ekleyin.</p>';
@@ -34,34 +41,54 @@
                     const card = document.createElement('div');
                     card.className = 'stream-card';
 
-                    // YENİ MANTIK: Yayının türüne göre iframe kaynağını belirle
-                    let iframeSrc;
-                    
-                    // Eğer tür 'iframe' ise, URL'yi doğrudan kullan.
-                    if (stream.type === 'iframe') {
-                        iframeSrc = stream.url;
-                    } 
-                    // Değilse (tür 'hls' veya eski veriler için tanımsız ise), oynatici.html'i kullan.
-                    else {
-                        const encodedUrl = encodeURIComponent(stream.url);
-                        iframeSrc = `oynatici.html?url=${encodedUrl}`;
-                    }
-
+                    // YENİ: Kart içeriği artık logo ve oynatma ikonu
+                    // Gerekli bilgileri data-* attributes ile saklıyoruz
                     card.innerHTML = `
                         <h3>${stream.name}</h3>
-                        <div class="iframe-container">
-                            <iframe
-                                src="${iframeSrc}"
-                                allow="autoplay; fullscreen; encrypted-media"
-                                scrolling="no">
-                            </iframe>
+                        <div class="logo-container" 
+                             data-stream-url="${stream.url}" 
+                             data-stream-type="${stream.type || 'hls'}">
+                            <img src="${stream.logoUrl || placeholderLogo}" alt="${stream.name} Logo">
+                            <div class="play-icon"></div>
                         </div>
                     `;
                     streamGrid.appendChild(card);
                 });
             }
+
+            // YENİ: Tıklama olayını tüm gride atıyoruz (Event Delegation)
+            streamGrid.addEventListener('click', function(e) {
+                const logoContainer = e.target.closest('.logo-container');
+
+                // Eğer bir logo container'ına tıklandıysa...
+                if (logoContainer) {
+                    const url = logoContainer.dataset.streamUrl;
+                    const type = logoContainer.dataset.streamType;
+                    
+                    let iframeSrc;
+                    if (type === 'iframe') {
+                        iframeSrc = url;
+                    } else {
+                        const encodedUrl = encodeURIComponent(url);
+                        iframeSrc = `oynatici.html?url=${encodedUrl}`;
+                    }
+
+                    // Tıklanan logoyu bir iframe ile değiştiriyoruz
+                    const iframeContainer = document.createElement('div');
+                    iframeContainer.className = 'iframe-container';
+                    iframeContainer.innerHTML = `
+                        <iframe
+                            src="${iframeSrc}"
+                            allow="autoplay; fullscreen; encrypted-media"
+                            scrolling="no">
+                        </iframe>
+                    `;
+
+                    // Kartın içindeki logo container'ını yeni iframe container ile değiştir
+                    logoContainer.parentNode.replaceChild(iframeContainer, logoContainer);
+                }
+            });
         });
     </script>
-
 </body>
 </html>
