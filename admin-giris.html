@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Giriş</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f7f9; }
+        .form-wrapper { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        input[type="text"], input[type="password"] { width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0069d9; }
+        p { text-align: center; margin-top: 15px; }
+        a { color: #007bff; text-decoration: none; }
+        .message { text-align: center; padding: 10px; margin-bottom: 15px; border-radius: 4px; display: none; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="form-wrapper">
+        <h1>Admin Girişi</h1>
+        <div id="message" class="message"></div>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <p>Hesabınız yok mu? <a href="admin-kayit.html">Kayıt Olun</a></p>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const messageDiv = document.getElementById('message');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            const admins = JSON.parse(localStorage.getItem('admins')) || [];
+
+            // Girilen kullanıcı adı ve şifreyle eşleşen bir admin var mı?
+            const validAdmin = admins.find(admin => admin.username === username && admin.password === password);
+
+            if (validAdmin) {
+                // Giriş başarılı. Oturum bilgisi oluşturup panele yönlendir.
+                // sessionStorage, tarayıcı sekmesi kapanınca silinir, bu yüzden daha güvenlidir.
+                sessionStorage.setItem('loggedInUser', username);
+                window.location.href = 'admin.html';
+            } else {
+                // Hatalı giriş
+                showMessage('Kullanıcı adı veya şifre hatalı!', 'error');
+            }
+        });
+
+        function showMessage(msg, type) {
+            messageDiv.textContent = msg;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
