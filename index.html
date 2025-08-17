@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS & M3U8 Oynatıcı</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>HLS & M3U8 Yayın Oynatıcı</h1>
+        <p>Oynatmak istediğiniz .m3u8 yayın linkini aşağıya yapıştırın ve Oynat düğmesine tıklayın.</p>
+        
+        <div class="input-container">
+            <input type="text" id="m3u8-url" placeholder="https://ornek.com/yayin.m3u8">
+            <button id="play-button">Oynat</button>
+        </div>
+        
+        <video id="video-player" controls></video>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <script src="script.js"></script>
+
+</body>
+</html>
