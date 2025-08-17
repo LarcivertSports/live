@@ -3,46 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ana Sayfa - Gömülü Yayın</title>
+    <title>Canlı Yayınlar</title>
     <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .iframe-container {
-            border: 2px solid #ccc;
-            width: 80%;
-            max-width: 900px;
-            margin: 20px auto;
-            /* Yüksekliği genişliğe oranla (16:9) ayarlamak için güzel bir teknik */
-            position: relative;
-            padding-top: 45%; /* 9 / 16 * 80% (genişlik) */
-        }
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        .stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
+        .stream-card { border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
+        .stream-card h3 { background-color: #f1f1f1; margin: 0; padding: 15px; }
+        .iframe-container { position: relative; padding-top: 56.25%; /* 16:9 Oran */ height: 0; }
+        .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .no-streams { color: #888; }
     </style>
 </head>
 <body>
 
-    <h1>HLS Yayın Sitemize Hoş Geldiniz!</h1>
-    <p>Aşağıda canlı yayınımızı izleyebilirsiniz.</p>
+    <h1>Canlı Yayınlar</h1>
+    <p>Aşağıdan izlemek istediğiniz yayını seçin.</p>
 
-    <div class="iframe-container">
-        <iframe
-            src="oynatici.html"
-            allow="autoplay; fullscreen"
-            scrolling="no">
-        </iframe>
-    </div>
+    <div id="streamGrid" class="stream-grid">
+        </div>
 
-    <p>Bu yayın, bir iframe içerisinde gösterilmektedir.</p>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const streamGrid = document.getElementById('streamGrid');
+            // Admin panelinde kaydedilen yayınları tarayıcı deposundan al
+            const streams = JSON.parse(localStorage.getItem('streams')) || [];
+
+            if (streams.length === 0) {
+                streamGrid.innerHTML = '<p class="no-streams">Gösterilecek yayın bulunmuyor. Lütfen admin panelinden yayın ekleyin.</p>';
+            } else {
+                streams.forEach(stream => {
+                    // Her bir yayın için bir kart oluştur
+                    const card = document.createElement('div');
+                    card.className = 'stream-card';
+
+                    // URL'yi iframe'e uygun hale getirmek için encode ediyoruz
+                    const encodedUrl = encodeURIComponent(stream.url);
+
+                    card.innerHTML = `
+                        <h3>${stream.name}</h3>
+                        <div class="iframe-container">
+                            <iframe
+                                src="oynatici.html?url=${encodedUrl}"
+                                allow="autoplay; fullscreen"
+                                scrolling="no">
+                            </iframe>
+                        </div>
+                    `;
+                    streamGrid.appendChild(card);
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
