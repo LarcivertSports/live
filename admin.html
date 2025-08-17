@@ -3,103 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Paneli - Yayın Yönetimi</title>
+    <title>Canlı Yayınlar</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f9; }
-        h1, h2 { color: #333; }
-        .form-container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        input[type="text"], select { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        ul { list-style-type: none; padding: 0; }
-        li { background-color: white; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .stream-type { font-size: 12px; background-color: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 10px; margin-left: 10px; }
-        .delete-btn { background-color: #dc3545; font-size: 12px; padding: 5px 10px; }
-        .delete-btn:hover { background-color: #c82333; }
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        .stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
+        .stream-card { border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
+        .stream-card h3 { background-color: #f1f1f1; margin: 0; padding: 15px; }
+        .iframe-container { position: relative; padding-top: 56.25%; /* 16:9 Oran */ height: 0; background-color: #000; }
+        .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .no-streams { color: #888; }
     </style>
 </head>
 <body>
 
-    <h1>Yayın Yönetim Paneli</h1>
+    <h1>Canlı Yayınlar</h1>
+    <p>Aşağıdan izlemek istediğiniz yayını seçin.</p>
 
-    <div class="form-container">
-        <h2>Yeni Yayın Ekle</h2>
-        <form id="addStreamForm">
-            <input type="text" id="streamName" placeholder="Yayın Adı (Örn: Spor Kanalı)" required>
-            <input type="text" id="streamUrl" placeholder="Yayın URL'si" required>
-            <select id="streamType">
-                <option value="hls">HLS (.m3u8)</option>
-                <option value="iframe">Web Sayfası / Gömülebilir Link</option>
-            </select>
-            <button type="submit">Yayını Ekle</button>
-        </form>
-    </div>
-
-    <h2>Mevcut Yayınlar</h2>
-    <ul id="streamList">
-        </ul>
+    <div id="streamGrid" class="stream-grid">
+        </div>
 
     <script>
-        const form = document.getElementById('addStreamForm');
-        const streamNameInput = document.getElementById('streamName');
-        const streamUrlInput = document.getElementById('streamUrl');
-        const streamTypeInput = document.getElementById('streamType'); // YENİ
-        const streamList = document.getElementById('streamList');
+        document.addEventListener('DOMContentLoaded', function() {
+            const streamGrid = document.getElementById('streamGrid');
+            const streams = JSON.parse(localStorage.getItem('streams')) || [];
 
-        let streams = JSON.parse(localStorage.getItem('streams')) || [];
-
-        function saveAndRender() {
-            localStorage.setItem('streams', JSON.stringify(streams));
-            renderStreams();
-        }
-
-        function renderStreams() {
-            streamList.innerHTML = '';
             if (streams.length === 0) {
-                streamList.innerHTML = '<li>Henüz yayın eklenmemiş.</li>';
-                return;
-            }
-            streams.forEach((stream, index) => {
-                const li = document.createElement('li');
-                // YENİ: Yayın türünü de göster
-                li.innerHTML = `
-                    <span>
-                        <strong>${stream.name}</strong><br>
-                        <small>${stream.url}</small>
-                    </span>
-                    <div>
-                        <span class="stream-type">${stream.type === 'iframe' ? 'Web Sayfası' : 'HLS'}</span>
-                        <button class="delete-btn" data-index="${index}">Sil</button>
-                    </div>
-                `;
-                streamList.appendChild(li);
-            });
-        }
+                streamGrid.innerHTML = '<p class="no-streams">Gösterilecek yayın bulunmuyor. Lütfen admin panelinden yayın ekleyin.</p>';
+            } else {
+                streams.forEach(stream => {
+                    const card = document.createElement('div');
+                    card.className = 'stream-card';
 
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const name = streamNameInput.value.trim();
-            const url = streamUrlInput.value.trim();
-            const type = streamTypeInput.value; // YENİ: Seçilen türü al
+                    // YENİ MANTIK: Yayının türüne göre iframe kaynağını belirle
+                    let iframeSrc;
+                    
+                    // Eğer tür 'iframe' ise, URL'yi doğrudan kullan.
+                    if (stream.type === 'iframe') {
+                        iframeSrc = stream.url;
+                    } 
+                    // Değilse (tür 'hls' veya eski veriler için tanımsız ise), oynatici.html'i kullan.
+                    else {
+                        const encodedUrl = encodeURIComponent(stream.url);
+                        iframeSrc = `oynatici.html?url=${encodedUrl}`;
+                    }
 
-            if (name && url) {
-                // YENİ: Kaydedilen objeye 'type' özelliğini ekle
-                streams.push({ name, url, type });
-                streamNameInput.value = '';
-                streamUrlInput.value = '';
-                saveAndRender();
-            }
-        });
-
-        streamList.addEventListener('click', function (e) {
-            if (e.target.classList.contains('delete-btn')) {
-                const index = e.target.getAttribute('data-index');
-                streams.splice(index, 1);
-                saveAndRender();
+                    card.innerHTML = `
+                        <h3>${stream.name}</h3>
+                        <div class="iframe-container">
+                            <iframe
+                                src="${iframeSrc}"
+                                allow="autoplay; fullscreen; encrypted-media"
+                                scrolling="no">
+                            </iframe>
+                        </div>
+                    `;
+                    streamGrid.appendChild(card);
+                });
             }
         });
-        
-        renderStreams();
     </script>
 
 </body>
