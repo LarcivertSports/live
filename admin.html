@@ -16,7 +16,8 @@
         .cancel-btn { background-color: #6c757d; }
         ul { list-style-type: none; padding: 0; }
         li { background-color: white; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .stream-info { flex-grow: 1; margin-right: 10px; }
+        .stream-info { display: flex; align-items: center; flex-grow: 1; margin-right: 10px; }
+        .stream-info img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 15px; }
         .stream-actions button { font-size: 12px; padding: 5px 10px; }
         .stream-type { font-size: 12px; background-color: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 10px; }
         .edit-btn { background-color: #ffc107; color: #212529; }
@@ -32,6 +33,7 @@
         <form id="streamForm">
             <input type="text" id="streamName" placeholder="Yayın Adı (Örn: Spor Kanalı)" required>
             <input type="text" id="streamUrl" placeholder="Yayın URL'si" required>
+            <input type="text" id="logoUrl" placeholder="Kanal Logo URL'si (https://...)">
             <select id="streamType">
                 <option value="hls">HLS (.m3u8)</option>
                 <option value="iframe">Web Sayfası / Gömülebilir Link</option>
@@ -45,24 +47,21 @@
     </div>
 
     <h2>Mevcut Yayınlar</h2>
-    <ul id="streamList">
-        </ul>
+    <ul id="streamList"></ul>
 
     <script>
         const form = document.getElementById('streamForm');
         const formTitle = document.getElementById('formTitle');
         const streamNameInput = document.getElementById('streamName');
         const streamUrlInput = document.getElementById('streamUrl');
+        const logoUrlInput = document.getElementById('logoUrl'); // YENİ
         const streamTypeInput = document.getElementById('streamType');
         const streamList = document.getElementById('streamList');
         const addBtn = document.getElementById('addBtn');
         const updateBtn = document.getElementById('updateBtn');
         const cancelBtn = document.getElementById('cancelBtn');
 
-        // YENİ: Düzenleme modunda olup olmadığımızı ve hangi yayını düzenlediğimizi takip etmek için.
-        // -1 ise ekleme modundayız, 0 veya daha büyük bir sayı ise düzenleme modundayız.
         let editIndex = -1;
-
         let streams = JSON.parse(localStorage.getItem('streams')) || [];
 
         function saveAndRender() {
@@ -70,28 +69,23 @@
             renderStreams();
         }
 
-        // YENİ: Formu ekleme veya düzenleme moduna geçiren fonksiyon
         function setFormMode(mode, index = -1) {
             if (mode === 'edit') {
                 editIndex = index;
                 const stream = streams[index];
-
-                // Formu düzenlenecek yayının bilgileriyle doldur
                 formTitle.textContent = "Yayını Düzenle";
                 streamNameInput.value = stream.name;
                 streamUrlInput.value = stream.url;
+                logoUrlInput.value = stream.logoUrl || ''; // YENİ
                 streamTypeInput.value = stream.type;
                 
-                // Butonları güncelle
                 addBtn.style.display = 'none';
                 updateBtn.style.display = 'inline-block';
                 cancelBtn.style.display = 'inline-block';
-            } else { // 'add' modu
+            } else {
                 editIndex = -1;
                 formTitle.textContent = "Yeni Yayın Ekle";
-                form.reset(); // Formu temizle
-
-                // Butonları ilk haline getir
+                form.reset();
                 addBtn.style.display = 'inline-block';
                 updateBtn.style.display = 'none';
                 cancelBtn.style.display = 'none';
@@ -106,10 +100,15 @@
             }
             streams.forEach((stream, index) => {
                 const li = document.createElement('li');
+                // YENİ: Logo önizlemesi eklendi
+                const logoPreview = stream.logoUrl ? `<img src="${stream.logoUrl}" alt="${stream.name} Logo">` : `<img src="https://via.placeholder.com/50" alt="Placeholder">`;
                 li.innerHTML = `
                     <div class="stream-info">
-                        <strong>${stream.name}</strong> <span class="stream-type">${stream.type === 'iframe' ? 'Web Sayfası' : 'HLS'}</span><br>
-                        <small>${stream.url}</small>
+                        ${logoPreview}
+                        <div>
+                            <strong>${stream.name}</strong> <span class="stream-type">${stream.type === 'iframe' ? 'Web Sayfası' : 'HLS'}</span><br>
+                            <small>${stream.url}</small>
+                        </div>
                     </div>
                     <div class="stream-actions">
                         <button class="edit-btn" data-index="${index}">Düzenle</button>
@@ -124,41 +123,33 @@
             e.preventDefault();
             const name = streamNameInput.value.trim();
             const url = streamUrlInput.value.trim();
+            const logoUrl = logoUrlInput.value.trim(); // YENİ
             const type = streamTypeInput.value;
 
             if (!name || !url) return;
+            // YENİ: stream objesine logoUrl eklendi
+            const streamData = { name, url, logoUrl, type };
 
-            // YENİ: Ekleme mi yoksa güncelleme mi yapacağımızı kontrol ediyoruz
             if (editIndex === -1) {
-                // Ekleme modundayız
-                streams.push({ name, url, type });
+                streams.push(streamData);
             } else {
-                // Düzenleme modundayız
-                streams[editIndex] = { name, url, type };
+                streams[editIndex] = streamData;
             }
             
             saveAndRender();
-            setFormMode('add'); // İşlem sonrası formu ekleme moduna geri al
-        });
-
-        // YENİ: İptal butonuna tıklandığında formu sıfırla
-        cancelBtn.addEventListener('click', function() {
             setFormMode('add');
         });
 
-        // YENİ: Liste üzerindeki tıklamaları yöneten fonksiyon (Düzenle ve Sil)
+        cancelBtn.addEventListener('click', () => setFormMode('add'));
+
         streamList.addEventListener('click', function (e) {
             const target = e.target;
             if (target.classList.contains('delete-btn')) {
                 const index = target.getAttribute('data-index');
-                // Silmeden önce kullanıcıya sor (isteğe bağlı ama önerilir)
                 if (confirm(`"${streams[index].name}" yayınını silmek istediğinizden emin misiniz?`)) {
                     streams.splice(index, 1);
                     saveAndRender();
-                    // Eğer silinen yayın düzenlenmekte olan yayınsa, formu sıfırla
-                    if (index == editIndex) {
-                        setFormMode('add');
-                    }
+                    if (index == editIndex) setFormMode('add');
                 }
             } else if (target.classList.contains('edit-btn')) {
                 const index = target.getAttribute('data-index');
@@ -166,7 +157,6 @@
             }
         });
         
-        // Sayfa ilk yüklendiğinde listeyi ve formu hazırla
         renderStreams();
     </script>
 
