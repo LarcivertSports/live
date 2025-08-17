@@ -1,0 +1,66 @@
+/* Sayfanın tamamı için temel ayarlar */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* İçeriği saran ana konteyner */
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 800px;
+}
+
+h1 {
+    color: #1a73e8;
+}
+
+/* Link giriş alanı ve butonun olduğu bölüm */
+.input-container {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* M3U8 linkinin girileceği metin kutusu */
+#m3u8-url {
+    flex-grow: 1; /* Alanın tamamını kapla */
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px; /* Sol kenarları yuvarlak */
+    font-size: 16px;
+}
+
+/* Oynat butonu */
+#play-button {
+    padding: 12px 20px;
+    border: none;
+    background-color: #1a73e8;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0; /* Sağ kenarları yuvarlak */
+    transition: background-color 0.3s;
+}
+
+#play-button:hover {
+    background-color: #1558b8;
+}
+
+/* Video oynatıcının kendisi */
+#video-player {
+    width: 100%;
+    max-width: 100%;
+    background-color: black;
+    border-radius: 5px;
+}
