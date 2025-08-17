@@ -13,7 +13,27 @@
         tr:nth-child(even) { background-color: #f2f2f2; }
         .warning { background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; text-align: center; margin-top: 20px; }
         .no-admins { text-align: center; padding: 20px; background-color: #e9ecef; }
-        .nav-link { display: block; text-align: center; margin-top: 20px; }
+        
+        /* === YENİ: Buton Konumlandırma ve Buton Stili === */
+        .nav-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-like-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .btn-like-link:hover {
+            opacity: 0.9;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -39,22 +59,21 @@
         <strong>Güvenlik Uyarısı:</strong> Bu liste sadece geliştirme amaçlıdır. Şifrelerin bu şekilde açık olarak gösterilmesi ciddi bir güvenlik açığıdır.
     </div>
 
-    <a href="admin.html" class="nav-link">Yönetim Paneline Geri Dön</a>
+    <div class="nav-container">
+        <a href="admin.html" class="btn-like-link">Yönetim Paneline Geri Dön</a>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tableBody = document.querySelector('#adminTable tbody');
             const noAdminsMessage = document.getElementById('noAdminsMessage');
             
-            // localStorage'dan admin listesini al
             const admins = JSON.parse(localStorage.getItem('admins')) || [];
 
             if (admins.length === 0) {
-                // Hiç admin yoksa mesaj göster
                 document.getElementById('adminTable').style.display = 'none';
                 noAdminsMessage.style.display = 'block';
             } else {
-                // Her bir admin için tabloya bir satır ekle
                 admins.forEach(admin => {
                     const row = document.createElement('tr');
                     
@@ -63,7 +82,7 @@
                     row.appendChild(usernameCell);
                     
                     const passwordCell = document.createElement('td');
-                    passwordCell.textContent = admin.password; // Güvenli değil!
+                    passwordCell.textContent = admin.password;
                     row.appendChild(passwordCell);
                     
                     tableBody.appendChild(row);
