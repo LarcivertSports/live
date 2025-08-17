@@ -23,8 +23,7 @@
         .stream-type { font-size: 12px; background-color: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 10px; }
         .edit-btn { background-color: #ffc107; color: #212529; }
         .delete-btn { background-color: #dc3545; }
-        /* YENİ: Header ve Çıkış Butonu için stiller */
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
         #logoutBtn { background-color: #6c757d; font-size: 14px; padding: 8px 12px; }
     </style>
 </head>
@@ -57,36 +56,30 @@
     </div>
 
     <h2>Mevcut Yayınlar</h2>
+    <p style="text-align: right; margin-bottom: 10px; margin-top: -30px;"><a href="admin-listesi.html" style="font-size: 14px;">Kayıtlı Adminleri Görüntüle</a></p>
+
     <ul id="streamList"></ul>
 
     <script>
-        // === YENİ: GİRİŞ KONTROLÜ (AUTH GUARD) ===
-        // Bu kod, sayfanın geri kalanından önce çalışır.
+        // === GİRİŞ KONTROLÜ (AUTH GUARD) ===
         const loggedInUser = sessionStorage.getItem('loggedInUser');
         if (!loggedInUser) {
-            // Eğer sessionStorage'da kullanıcı bilgisi yoksa, giriş sayfasına yönlendir.
             alert('Bu sayfayı görüntülemek için giriş yapmalısınız.');
             window.location.href = 'admin-giris.html';
         }
         // === GİRİŞ KONTROLÜ SONU ===
 
-
-        // Sayfanın geri kalanındaki tüm JavaScript kodları aynı...
-        const form = document.getElementById('streamForm');
-        // ... (önceki admin.html'deki script'in tamamı buraya gelecek)
         const welcomeMessage = document.getElementById('welcomeMessage');
         const logoutBtn = document.getElementById('logoutBtn');
 
-        // Hoşgeldin mesajını ayarla
         welcomeMessage.textContent = `Hoş geldin, ${loggedInUser}!`;
         
-        // Çıkış butonuna tıklanınca
         logoutBtn.addEventListener('click', function() {
-            sessionStorage.removeItem('loggedInUser'); // Oturum bilgisini sil
-            window.location.href = 'admin-giris.html'; // Giriş sayfasına yönlendir
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = 'admin-giris.html';
         });
 
-        // Diğer tüm değişken ve fonksiyon tanımlamaları...
+        const form = document.getElementById('streamForm');
         const formTitle = document.getElementById('formTitle');
         const streamNameInput = document.getElementById('streamName');
         const streamUrlInput = document.getElementById('streamUrl');
@@ -192,3 +185,4 @@
 
 </body>
 </html>
+ 
