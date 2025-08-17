@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Kayıt</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f7f9; }
+        .form-wrapper { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        input[type="text"], input[type="password"] { width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        p { text-align: center; margin-top: 15px; }
+        a { color: #007bff; text-decoration: none; }
+        .message { text-align: center; padding: 10px; margin-bottom: 15px; border-radius: 4px; display: none; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="form-wrapper">
+        <h1>Yeni Admin Kaydı</h1>
+        <div id="message" class="message"></div>
+        <form id="registerForm">
+            <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <input type="password" id="passwordConfirm" placeholder="Şifre Tekrar" required>
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <p>Zaten bir hesabınız var mı? <a href="admin-giris.html">Giriş Yapın</a></p>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const passwordConfirmInput = document.getElementById('passwordConfirm');
+        const messageDiv = document.getElementById('message');
+
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const passwordConfirm = passwordConfirmInput.value;
+
+            // Şifreler eşleşiyor mu kontrolü
+            if (password !== passwordConfirm) {
+                showMessage('Şifreler eşleşmiyor!', 'error');
+                return;
+            }
+
+            // localStorage'dan mevcut admin listesini al veya boş bir dizi oluştur
+            let admins = JSON.parse(localStorage.getItem('admins')) || [];
+
+            // Kullanıcı adı daha önce alınmış mı kontrolü
+            if (admins.some(admin => admin.username === username)) {
+                showMessage('Bu kullanıcı adı zaten alınmış!', 'error');
+                return;
+            }
+
+            // Yeni admini listeye ekle
+            admins.push({ username, password });
+            
+            // Güncel listeyi localStorage'a kaydet
+            localStorage.setItem('admins', JSON.stringify(admins));
+
+            showMessage('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...', 'success');
+            
+            // Kullanıcıyı 2 saniye sonra giriş sayfasına yönlendir
+            setTimeout(() => {
+                window.location.href = 'admin-giris.html';
+            }, 2000);
+        });
+
+        function showMessage(msg, type) {
+            messageDiv.textContent = msg;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
