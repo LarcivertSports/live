@@ -5,18 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canlı TV İzle</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        body { font-family: sans-serif; background-color: #f0f0f0; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: auto; background: #fff; padding: 20px; border-radius: 8px;}
-        .player-wrapper { background-color: #000; margin-bottom: 20px; position: relative; padding-top: 56.25%; }
-        .player-wrapper video, .player-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .channel-list { display: flex; flex-wrap: wrap; gap: 15px; padding-top: 10px; }
-        .channel-box { border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; width: 120px; transition: transform 0.2s; }
-        .channel-box:hover { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .channel-box img { max-width: 100px; height: 60px; object-fit: contain; }
-        .channel-box p { margin: 5px 0 0 0; font-size: 14px; font-weight: bold; }
-        h1, h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -25,40 +14,66 @@
             <p style="text-align: center; color: white; padding-top: 25%;">Lütfen izlemek için bir kanal seçin.</p>
         </div>
         <h2>Kanal Listesi</h2>
-        <div class="channel-list">
-
+        <div class="channel-list" id="channel-list-container">
             </div>
     </div>
-    <script>
-        // Bu script bölümü değişmeden kalacak.
-        const playerContainer = document.getElementById('player-container');
-        let hls;
-        function playStream(type, url) {
-            playerContainer.innerHTML = '';
-            if (hls) { hls.destroy(); }
-            if (type === 'm3u8') {
-                const video = document.createElement('video');
-                video.controls = true;
-                playerContainer.appendChild(video);
-                if (Hls.isSupported()) {
-                    hls = new Hls();
-                    hls.loadSource(url);
-                    hls.attachMedia(video);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function () { video.play(); });
-                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.src = url;
-                    video.addEventListener('loadedmetadata', function () { video.play(); });
-                }
-            } else if (type === 'iframe') {
-                const iframe = document.createElement('iframe');
-                iframe.src = url;
-                iframe.setAttribute('frameborder', '0');
-                iframe.setAttribute('allow', 'autoplay; encrypted-media');
-                iframe.setAttribute('allowfullscreen', '');
-                playerContainer.appendChild(iframe);
-            }
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const channelListContainer = document.getElementById('channel-list-container');
+        
+        // Tarayıcı hafızasından kanal listesini al
+        const kanallarJSON = localStorage.getItem('tvKanallari');
+        const kanallar = kanallarJSON ? JSON.parse(kanallarJSON) : [];
+
+        if (kanallar.length === 0) {
+            channelListContainer.innerHTML = '<p>Gösterilecek kanal bulunamadı. Lütfen yönetim panelinden kanal ekleyin.</p>';
+            return;
         }
-    </script>
+
+        // Her bir kanal için HTML kutusu oluştur ve ekle
+        kanallar.forEach(kanal => {
+            const channelDiv = document.createElement('div');
+            channelDiv.className = 'channel-box';
+            channelDiv.setAttribute('onclick', `playStream('${kanal.tip}', '${kanal.url}')`);
+            
+            channelDiv.innerHTML = `
+                <img src="${kanal.logo}" alt="${kanal.isim} Logosu">
+                <p>${kanal.isim}</p>
+            `;
+            channelListContainer.appendChild(channelDiv);
+        });
+    });
+
+    // Bu oynatıcı fonksiyonu değişmeden kalacak
+    const playerContainer = document.getElementById('player-container');
+    let hls;
+    function playStream(type, url) {
+        playerContainer.innerHTML = '';
+        if (hls) { hls.destroy(); }
+        if (type === 'm3u8') {
+            const video = document.createElement('video');
+            video.controls = true;
+            playerContainer.appendChild(video);
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.addEventListener('loadedmetadata', () => video.play());
+            }
+        } else if (type === 'iframe') {
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'autoplay; encrypted-media');
+            iframe.setAttribute('allowfullscreen', '');
+            playerContainer.appendChild(iframe);
+        }
+    }
+</script>
+
 </body>
 </html>
- 
