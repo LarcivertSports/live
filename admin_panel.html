@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Kanal Kodu Üretici</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .panel { max-width: 700px; margin: auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { display: block; width: 100%; padding: 15px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn:hover { background-color: #218838; }
+        #output { width: 100%; height: 180px; margin-top: 20px; padding: 10px; font-family: monospace; font-size: 14px; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; resize: vertical; }
+        .copy-btn { background-color: #007bff; margin-top: 10px; }
+        .copy-btn:hover { background-color: #0069d9; }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <h1>Kanal Kodu Üretici Panel</h1>
+    
+    <div class="form-group">
+        <label for="kanalAdi">Kanal Adı</label>
+        <input type="text" id="kanalAdi" placeholder="Örn: Kanal A">
+    </div>
+    
+    <div class="form-group">
+        <label for="logoUrl">Kanal Logo URL</label>
+        <input type="text" id="logoUrl" placeholder="https:// ... /logo.png">
+    </div>
+
+    <div class="form-group">
+        <label for="yayinTipi">Yayın Tipi</label>
+        <select id="yayinTipi">
+            <option value="m3u8">HLS (m3u8)</option>
+            <option value="iframe">Iframe (Gömülü)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="yayinUrl">Yayın URL (m3u8 veya iframe linki)</label>
+        <input type="text" id="yayinUrl" placeholder="https:// ... .m3u8 veya https:// ... /embed/...">
+    </div>
+
+    <button class="btn" onclick="generateCode()">Kodu Oluştur</button>
+
+    <div class="form-group">
+        <label for="output" style="margin-top: 20px;">Oluşturulan HTML Kodu:</label>
+        <textarea id="output" readonly placeholder="Kanal bilgilerini girdikten sonra oluşturulan kod burada görünecektir..."></textarea>
+    </div>
+
+    <button class="btn copy-btn" onclick="copyCode()">Kodu Kopyala</button>
+
+</div>
+
+<script>
+    function generateCode() {
+        const kanalAdi = document.getElementById('kanalAdi').value;
+        const logoUrl = document.getElementById('logoUrl').value;
+        const yayinTipi = document.getElementById('yayinTipi').value;
+        const yayinUrl = document.getElementById('yayinUrl').value;
+        const outputArea = document.getElementById('output');
+
+        if (!kanalAdi || !logoUrl || !yayinUrl) {
+            alert('Lütfen tüm alanları doldurun!');
+            return;
+        }
+
+        const codeTemplate = `
+<div class="channel-box" onclick="playStream('${yayinTipi}', '${yayinUrl}')">
+    <img src="${logoUrl}" alt="${kanalAdi} Logosu">
+    <p>${kanalAdi}</p>
+</div>
+`;
+
+        outputArea.value = codeTemplate.trim();
+    }
+
+    function copyCode() {
+        const outputArea = document.getElementById('output');
+        if (outputArea.value === '') {
+            alert('Önce kodu oluşturmalısınız!');
+            return;
+        }
+        outputArea.select();
+        document.execCommand('copy');
+        alert('Kod panoya kopyalandı!');
+    }
+</script>
+
+</body>
+</html>
+ 
