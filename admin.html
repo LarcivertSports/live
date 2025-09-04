@@ -7,8 +7,9 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f9; }
         h1, h2 { color: #333; }
-        .form-container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        input[type="text"], select { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .form-container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input[type="text"], select, textarea { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+        textarea { height: 150px; resize: vertical; }
         button { color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 5px; }
         button:hover { opacity: 0.9; }
         .add-btn { background-color: #007bff; }
@@ -24,31 +25,16 @@
         .delete-btn { background-color: #dc3545; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
         #logoutBtn { background-color: #6c757d; font-size: 14px; padding: 8px 12px; }
-        
-        /* === YENİ: LİNKLERİ BUTON GİBİ GÖSTERMEK İÇİN YARDIMCI SINIF === */
-        .btn-like-link {
-            display: inline-block;
-            padding: 8px 12px;
-            background-color: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        .btn-like-link:hover {
-            opacity: 0.9;
-            color: white;
-        }
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Butonlar arasına boşluk koyar */
-        }
+        .btn-like-link { display: inline-block; padding: 8px 12px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; line-height: 1.5; }
+        .btn-like-link:hover { opacity: 0.9; color: white; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        /* YENİ: Yayınlama bölümü için stil */
+        .publish-container { background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .publish-container p { margin-top: 0; }
+        .publish-btn { background-color: #17a2b8; }
     </style>
 </head>
 <body>
-
     <div class="admin-header">
         <h1>Yayın Yönetim Paneli</h1>
         <div class="header-actions">
@@ -59,47 +45,48 @@
     </div>
 
     <div class="form-container">
-        <h2 id="formTitle">Yeni Yayın Ekle</h2>
-        <form id="streamForm">
-            <input type="text" id="streamName" placeholder="Yayın Adı (Örn: Spor Kanalı)" required>
-            <input type="text" id="streamUrl" placeholder="Yayın URL'si" required>
-            <input type="text" id="logoUrl" placeholder="Kanal Logo URL'si (https://...)">
-            <select id="streamType">
-                <option value="hls">HLS (.m3u8)</option>
-                <option value="iframe">Web Sayfası / Gömülebilir Link</option>
-            </select>
-            <div id="buttonGroup">
-                <button type="submit" class="add-btn" id="addBtn">Yayını Ekle</button>
-                <button type="submit" class="update-btn" id="updateBtn" style="display:none;">Yayını Güncelle</button>
-                <button type="button" class="cancel-btn" id="cancelBtn" style="display:none;">İptal</button>
-            </div>
-        </form>
-    </div>
+        </div>
 
-    <h2>Mevcut Yayınlar</h2>
+    <h2>Mevcut Yayınlar (Taslak)</h2>
     <ul id="streamList"></ul>
 
+    <div class="publish-container">
+        <h2>Değişiklikleri Herkese Açık Yayınla</h2>
+        <p>Aşağıdaki butona tıklayarak mevcut yayın listenizi genel `streams.json` dosyasına aktarılacak formata dönüştürün. Ardından kutudaki metnin tamamını kopyalayıp projenizdeki `streams.json` dosyasına yapıştırın.</p>
+        <button id="publishBtn" class="publish-btn">JSON Verisini Oluştur ve Kopyala</button>
+        <textarea id="jsonOutput" readonly placeholder="Oluşturulan JSON verisi burada görünecek..."></textarea>
+    </div>
+
     <script>
-        // === GİRİŞ KONTROLÜ (AUTH GUARD) ===
-        const loggedInUser = sessionStorage.getItem('loggedInUser');
-        if (!loggedInUser) {
-            alert('Bu sayfayı görüntülemek için giriş yapmalısınız.');
-            window.location.href = 'admin-giris.html';
-        }
-        // === GİRİŞ KONTROLÜ SONU ===
-
-        // Scriptin geri kalanı aynı
-        const welcomeMessage = document.getElementById('welcomeMessage');
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        welcomeMessage.textContent = `Hoş geldin, ${loggedInUser}!`;
+        // Giriş kontrolü, değişkenler ve fonksiyonlar (renderStreams, setFormMode vb.) aynı kalacak
+        // ...
         
-        logoutBtn.addEventListener('click', function() {
-            sessionStorage.removeItem('loggedInUser');
-            window.location.href = 'admin-giris.html';
+        // YENİ: Yayınlama butonu ve text alanı için değişkenler
+        const publishBtn = document.getElementById('publishBtn');
+        const jsonOutput = document.getElementById('jsonOutput');
+
+        // YENİ: Yayınlama butonuna tıklama olayı
+        publishBtn.addEventListener('click', function() {
+            // localStorage'dan en güncel stream listesini al
+            const currentStreams = JSON.parse(localStorage.getItem('streams')) || [];
+            // Listeyi okunabilir (formatlı) bir JSON metnine dönüştür
+            const jsonString = JSON.stringify(currentStreams, null, 2);
+            // Metni textarea'ya yaz
+            jsonOutput.value = jsonString;
+            // Metni otomatik olarak seç ve panoya kopyala
+            jsonOutput.select();
+            try {
+                document.execCommand('copy');
+                alert('JSON verisi panoya kopyalandı!');
+            } catch (err) {
+                alert('Otomatik kopyalama başarısız oldu. Lütfen manuel olarak kopyalayın.');
+            }
         });
 
-        const form = document.getElementById('streamForm');
+        // --- Buradan önceki tüm script kodları (giriş kontrolü dahil) aynı kalacak ---
+    </script>
+</body>
+</html>
         const formTitle = document.getElementById('formTitle');
         const streamNameInput = document.getElementById('streamName');
         const streamUrlInput = document.getElementById('streamUrl');
