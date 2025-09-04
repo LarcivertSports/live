@@ -3,95 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Kanal Kodu Üretici</title>
-    <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
-        .panel { max-width: 700px; margin: auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #333; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn { display: block; width: 100%; padding: 15px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        .btn:hover { background-color: #218838; }
-        #output { width: 100%; height: 180px; margin-top: 20px; padding: 10px; font-family: monospace; font-size: 14px; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; resize: vertical; }
-        .copy-btn { background-color: #007bff; margin-top: 10px; }
-        .copy-btn:hover { background-color: #0069d9; }
-    </style>
+    <title>Canlı TV - Yönetim Paneli</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="panel">
-    <h1>Kanal Kodu Üretici Panel</h1>
+<div class="container">
+    <h1>Kanal Yönetim Paneli</h1>
+    <p>Burada eklediğiniz kanallar tarayıcınızın hafızasına kaydedilir ve ana sayfada otomatik olarak gösterilir.</p>
+
+    <h2>Yeni Kanal Ekle</h2>
+    <form class="admin-form" id="kanalEkleForm">
+        <div class="form-group">
+            <label for="isim">Kanal Adı</label>
+            <input type="text" id="isim" required>
+        </div>
+        <div class="form-group">
+            <label for="logo">Kanal Logo URL</label>
+            <input type="text" id="logo" required>
+        </div>
+        <div class="form-group">
+            <label for="tip">Yayın Tipi</label>
+            <select id="tip" required>
+                <option value="m3u8">HLS (m3u8)</option>
+                <option value="iframe">Iframe (Gömülü)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="url">Yayın URL</label>
+            <input type="text" id="url" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Kanalı Kaydet</button>
+        </div>
+    </form>
     
-    <div class="form-group">
-        <label for="kanalAdi">Kanal Adı</label>
-        <input type="text" id="kanalAdi" placeholder="Örn: Kanal A">
-    </div>
-    
-    <div class="form-group">
-        <label for="logoUrl">Kanal Logo URL</label>
-        <input type="text" id="logoUrl" placeholder="https:// ... /logo.png">
-    </div>
-
-    <div class="form-group">
-        <label for="yayinTipi">Yayın Tipi</label>
-        <select id="yayinTipi">
-            <option value="m3u8">HLS (m3u8)</option>
-            <option value="iframe">Iframe (Gömülü)</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="yayinUrl">Yayın URL (m3u8 veya iframe linki)</label>
-        <input type="text" id="yayinUrl" placeholder="https:// ... .m3u8 veya https:// ... /embed/...">
-    </div>
-
-    <button class="btn" onclick="generateCode()">Kodu Oluştur</button>
-
-    <div class="form-group">
-        <label for="output" style="margin-top: 20px;">Oluşturulan HTML Kodu:</label>
-        <textarea id="output" readonly placeholder="Kanal bilgilerini girdikten sonra oluşturulan kod burada görünecektir..."></textarea>
-    </div>
-
-    <button class="btn copy-btn" onclick="copyCode()">Kodu Kopyala</button>
-
+    <h2>Mevcut Kanallar</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>İsim</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody id="mevcutKanallarListesi">
+            </tbody>
+    </table>
 </div>
 
 <script>
-    function generateCode() {
-        const kanalAdi = document.getElementById('kanalAdi').value;
-        const logoUrl = document.getElementById('logoUrl').value;
-        const yayinTipi = document.getElementById('yayinTipi').value;
-        const yayinUrl = document.getElementById('yayinUrl').value;
-        const outputArea = document.getElementById('output');
+    const kanalEkleForm = document.getElementById('kanalEkleForm');
+    const mevcutKanallarListesi = document.getElementById('mevcutKanallarListesi');
 
-        if (!kanalAdi || !logoUrl || !yayinUrl) {
-            alert('Lütfen tüm alanları doldurun!');
-            return;
-        }
+    // Sayfa ilk yüklendiğinde hafızadaki kanalları ekrana getir
+    document.addEventListener('DOMContentLoaded', kanallariGoster);
 
-        const codeTemplate = `
-<div class="channel-box" onclick="playStream('${yayinTipi}', '${yayinUrl}')">
-    <img src="${logoUrl}" alt="${kanalAdi} Logosu">
-    <p>${kanalAdi}</p>
-</div>
-`;
+    // Form gönderildiğinde kanalı kaydet
+    kanalEkleForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Formun sayfayı yenilemesini engelle
+        
+        const yeniKanal = {
+            id: Date.now(), // Her kanal için benzersiz bir kimlik
+            isim: document.getElementById('isim').value,
+            logo: document.getElementById('logo').value,
+            tip: document.getElementById('tip').value,
+            url: document.getElementById('url').value
+        };
 
-        outputArea.value = codeTemplate.trim();
+        kanaliKaydet(yeniKanal);
+        kanallariGoster(); // Listeyi yenile
+        kanalEkleForm.reset(); // Formu temizle
+    });
+
+    function kanallariGetir() {
+        // Tarayıcı hafızasından kanalları al, eğer boşsa boş bir dizi döndür
+        const kanallarJSON = localStorage.getItem('tvKanallari');
+        return kanallarJSON ? JSON.parse(kanallarJSON) : [];
     }
 
-    function copyCode() {
-        const outputArea = document.getElementById('output');
-        if (outputArea.value === '') {
-            alert('Önce kodu oluşturmalısınız!');
+    function kanaliKaydet(yeniKanal) {
+        const kanallar = kanallariGetir();
+        kanallar.push(yeniKanal);
+        // Güncel listeyi JSON formatına çevirip hafızaya kaydet
+        localStorage.setItem('tvKanallari', JSON.stringify(kanallar));
+    }
+
+    function kanaliSil(id) {
+        if (confirm('Bu kanalı silmek istediğinizden emin misiniz?')) {
+            let kanallar = kanallariGetir();
+            // Silinecek kanal dışındaki tüm kanalları filtrele
+            kanallar = kanallar.filter(kanal => kanal.id !== id);
+            // Yeni listeyi hafızaya kaydet
+            localStorage.setItem('tvKanallari', JSON.stringify(kanallar));
+            kanallariGoster(); // Listeyi yenile
+        }
+    }
+
+    function kanallariGoster() {
+        const kanallar = kanallariGetir();
+        mevcutKanallarListesi.innerHTML = ''; // Listeyi temizle
+
+        if (kanallar.length === 0) {
+            mevcutKanallarListesi.innerHTML = '<tr><td colspan="3" style="text-align:center;">Kaydedilmiş kanal bulunmuyor.</td></tr>';
             return;
         }
-        outputArea.select();
-        document.execCommand('copy');
-        alert('Kod panoya kopyalandı!');
+
+        kanallar.forEach(kanal => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><img src="${kanal.logo}" alt="${kanal.isim}" style="width: 80px; border-radius: 4px;"></td>
+                <td>${kanal.isim}</td>
+                <td><a href="#" class="delete-btn" onclick="kanaliSil(${kanal.id})">Sil</a></td>
+            `;
+            mevcutKanallarListesi.appendChild(tr);
+        });
     }
 </script>
 
 </body>
 </html>
- 
