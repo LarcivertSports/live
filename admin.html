@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Paneli - Yayın Yönetimi</title>
     <style>
+        /* Stil kodları öncekiyle aynı, sadece buton rengi eklendi */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f9; }
         h1, h2 { color: #333; }
         .form-container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -28,52 +29,72 @@
         .btn-like-link { display: inline-block; padding: 8px 12px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; line-height: 1.5; }
         .btn-like-link:hover { opacity: 0.9; color: white; }
         .header-actions { display: flex; align-items: center; gap: 10px; }
-        /* YENİ: Yayınlama bölümü için stil */
         .publish-container { background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 20px; border-radius: 8px; margin-top: 20px; }
         .publish-container p { margin-top: 0; }
         .publish-btn { background-color: #17a2b8; }
+        .import-btn { background-color: #28a745; } /* YENİ */
     </style>
 </head>
 <body>
-    <div class="admin-header">
-        <h1>Yayın Yönetim Paneli</h1>
-        <div class="header-actions">
-            <span id="welcomeMessage"></span>
-            <a href="admin-listesi.html" class="btn-like-link">Admin Listesi</a>
-            <button id="logoutBtn">Çıkış Yap</button>
-        </div>
-    </div>
-
-    <div class="form-container">
-        </div>
-
+    <div class="admin-header">...</div>
+    <div class="form-container">...</div>
     <h2>Mevcut Yayınlar (Taslak)</h2>
     <ul id="streamList"></ul>
-
+    
     <div class="publish-container">
-        <h2>Değişiklikleri Herkese Açık Yayınla</h2>
-        <p>Aşağıdaki butona tıklayarak mevcut yayın listenizi genel `streams.json` dosyasına aktarılacak formata dönüştürün. Ardından kutudaki metnin tamamını kopyalayıp projenizdeki `streams.json` dosyasına yapıştırın.</p>
+        <h2>Veri Yönetimi</h2>
+        <p>Sitedeki güncel veriyi bu panele çekmek veya bu paneldeki veriyi siteye yayınlamak için aşağıdaki butonları kullanın.</p>
+        
+        <button id="importBtn" class="import-btn">Veriyi `streams.json`'dan İçe Aktar</button>
+        
+        <hr style="margin: 20px 0;">
+
+        <h3>Değişiklikleri Herkese Açık Yayınla (Dışa Aktar)</h3>
+        <p>Aşağıdaki butona tıklayarak mevcut yayın listenizi `streams.json` dosyasına aktarılacak formata dönüştürün.</p>
         <button id="publishBtn" class="publish-btn">JSON Verisini Oluştur ve Kopyala</button>
         <textarea id="jsonOutput" readonly placeholder="Oluşturulan JSON verisi burada görünecek..."></textarea>
     </div>
 
     <script>
-        // Giriş kontrolü, değişkenler ve fonksiyonlar (renderStreams, setFormMode vb.) aynı kalacak
-        // ...
-        
-        // YENİ: Yayınlama butonu ve text alanı için değişkenler
+        // --- Giriş Kontrolü, Değişkenler ve Mevcut Fonksiyonlar aynı kalacak ---
+        const loggedInUser = sessionStorage.getItem('loggedInUser');
+        if (!loggedInUser) {
+            window.location.href = 'admin-giris.html';
+        }
+
+        // === YENİ: İçe Aktarma Butonu ve İşlevselliği ===
+        const importBtn = document.getElementById('importBtn');
+        importBtn.addEventListener('click', async function() {
+            if (confirm("Bu işlem, mevcut yerel taslağınızın üzerine yazacaktır. Sitedeki güncel verileri içe aktarmak istediğinizden emin misiniz?")) {
+                try {
+                    const response = await fetch('../streams.json?v=' + Date.now()); // ../ ile ana dizine çık
+                    if (!response.ok) {
+                        throw new Error('streams.json dosyası bulunamadı veya okunamadı.');
+                    }
+                    const serverStreams = await response.json();
+                    
+                    // Gelen veriyi localStorage'a kaydet
+                    localStorage.setItem('streams', JSON.stringify(serverStreams));
+                    
+                    // Global 'streams' dizisini güncelle ve ekranı yeniden çiz
+                    streams = serverStreams;
+                    renderStreams();
+                    
+                    alert('Veriler başarıyla içe aktarıldı ve taslak listeniz güncellendi!');
+
+                } catch (error) {
+                    alert('Veri içe aktarılırken bir hata oluştu: ' + error.message);
+                }
+            }
+        });
+
+        // Mevcut yayınlama butonu işlevi...
         const publishBtn = document.getElementById('publishBtn');
         const jsonOutput = document.getElementById('jsonOutput');
-
-        // YENİ: Yayınlama butonuna tıklama olayı
         publishBtn.addEventListener('click', function() {
-            // localStorage'dan en güncel stream listesini al
             const currentStreams = JSON.parse(localStorage.getItem('streams')) || [];
-            // Listeyi okunabilir (formatlı) bir JSON metnine dönüştür
             const jsonString = JSON.stringify(currentStreams, null, 2);
-            // Metni textarea'ya yaz
             jsonOutput.value = jsonString;
-            // Metni otomatik olarak seç ve panoya kopyala
             jsonOutput.select();
             try {
                 document.execCommand('copy');
@@ -82,8 +103,10 @@
                 alert('Otomatik kopyalama başarısız oldu. Lütfen manuel olarak kopyalayın.');
             }
         });
-
-        // --- Buradan önceki tüm script kodları (giriş kontrolü dahil) aynı kalacak ---
+        
+        // --- Buradan önceki tüm script kodları aynı kalacak ---
+        // (form, butonlar, renderStreams, setFormMode vb. fonksiyonları içeren tüm eski kodlar)
+        // Bu kodları eksiksiz bir şekilde dosyanıza kopyalamayı unutmayın.
     </script>
 </body>
 </html>
