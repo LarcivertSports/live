@@ -3,77 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canlı TV İzle</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <link rel="stylesheet" href="style.css">
+    <title>[Şirket Adı] - Profesyonel Nakliyat Hizmetleri</title>
+    <meta name="description" content="[Şirket Adı] ile güvenli, sigortalı ve profesyonel evden eve nakliyat, ofis taşıma ve depolama hizmetleri. Hemen ücretsiz teklif alın.">
+    <meta name="keywords" content="nakliyat, evden eve nakliyat, ofis taşıma, profesyonel taşıma, sigortalı nakliyat">
+    <style>
+        /* Genel Stil Ayarları */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 20px;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        /* Header & Navigasyon */
+        header {
+            background: #fff;
+            padding: 1rem 0;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header #logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        header nav ul li {
+            margin-left: 20px;
+        }
+        header nav ul li a {
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        header nav ul li a:hover {
+            color: #007bff;
+        }
+        
+        /* Ana Karşılama Alanı */
+        #hero {
+            background: linear-gradient(rgba(0, 86, 179, 0.7), rgba(0, 86, 179, 0.7)), url('https://via.placeholder.com/1500x800.png?text=Nakliyat+Kamyonu') no-repeat center center/cover;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        #hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        #hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #e0a800;
+        }
+
+        /* Bölümler */
+        section {
+            padding: 60px 0;
+        }
+        section:nth-of-type(odd) {
+            background: #f9f9f9;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+
+        /* Hizmetler Bölümü */
+        #services .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+        #services .service-item {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        #services .service-item:hover {
+            transform: translateY(-10px);
+        }
+        #services .service-item i {
+            font-size: 3rem;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        #services .service-item h3 {
+            margin-bottom: 10px;
+        }
+
+        /* Hakkımızda ve Neden Biz */
+        #about .container, #why-us .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        #about img, #why-us img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        #why-us ul {
+            list-style: none;
+            padding: 0;
+        }
+        #why-us ul li {
+            background: url('https://via.placeholder.com/20x20.png?text=✓') no-repeat left center;
+            padding-left: 30px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        /* Müşteri Yorumları */
+        #testimonials .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .testimonial-card {
+            background: #fff;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .testimonial-card p {
+            font-style: italic;
+        }
+        .testimonial-card .author {
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
+            color: #555;
+        }
+
+        /* İletişim Formu */
+        #contact {
+            background: #0056b3;
+            color: #fff;
+        }
+        #contact .section-title, #contact h3 {
+            color: #fff;
+        }
+        #contact .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        #contact form {
+            display: flex;
+            flex-direction: column;
+        }
+        #contact input, #contact textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        #contact textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        #contact .btn {
+            align-self: flex-start;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        /* Mobil Uyum (Responsive) */
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+            }
+            header nav ul {
+                margin-top: 10px;
+            }
+            #hero h1 {
+                font-size: 2.5rem;
+            }
+            #about .container, #why-us .container, #contact .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            #about img, #why-us img {
+                margin-top: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Canlı TV</h1>
-        <div class="player-wrapper" id="player-container">
-            <p style="text-align: center; color: white; padding-top: 25%;">Lütfen izlemek için bir kanal seçin.</p>
+
+    <header>
+        <div class="container">
+            <a href="#" id="logo">[Şirket Adı]</a>
+            <nav>
+                <ul>
+                    <li><a href="#services">Hizmetlerimiz</a></li>
+                    <li><a href="#about">Hakkımızda</a></li>
+                    <li><a href="#why-us">Neden Biz?</a></li>
+                    <li><a href="#contact">İletişim</a></li>
+                </ul>
+            </nav>
         </div>
-        <h2>Kanal Listesi</h2>
-        <div class="channel-list" id="channel-list-container">
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1>Profesyonel ve Sigortalı Nakliyat Çözümleri</h1>
+                <p>Eşyalarınız bizimle güvende. Şehir içi ve şehirler arası taşımacılıkta lider firma.</p>
+                <a href="#contact" class="btn">Hemen Ücretsiz Teklif Al</a>
             </div>
-    </div>
+        </section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const channelListContainer = document.getElementById('channel-list-container');
-        
-        // Tarayıcı hafızasından kanal listesini al
-        const kanallarJSON = localStorage.getItem('tvKanallari');
-        const kanallar = kanallarJSON ? JSON.parse(kanallarJSON) : [];
+        <section id="services">
+            <div class="container">
+                <h2 class="section-title">Hizmetlerimiz</h2>
+                <div class="service-grid">
+                    <div class="service-item">
+                        <i class="fas fa-home"></i>
+                        <h3>Evden Eve Nakliyat</h3>
+                        <p>Eşyalarınızı özenle paketliyor, yeni evinize güvenle taşıyoruz.</p>
+                    </div>
+                    <div class="service-item">
+                        <i class="fas fa-building"></i>
+                        <h3>Ofis ve İş Yeri Taşıma</h3>
+                        <p>İş akışınız aksamadan ofisinizi yeni lokasyonuna taşıyoruz.</p>
+                    </div>
+                    <div class="service-item">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Eşya Depolama</h3>
+                        <p>Fazla eşyalarınız için güvenli ve hijyenik depolama alanları sunuyoruz.</p>
+                    </div>
+                    <div class="service-item">
+                        <i class="fas fa-truck"></i>
+                        <h3>Şehirler Arası Nakliyat</h3>
+                        <p>Türkiye'nin her yerine sigortalı ve zamanında teslimat garantisi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        if (kanallar.length === 0) {
-            channelListContainer.innerHTML = '<p>Gösterilecek kanal bulunamadı. Lütfen yönetim panelinden kanal ekleyin.</p>';
-            return;
-        }
+        <section id="about">
+            <div class="container">
+                <div class="about-text">
+                    <h2 class="section-title" style="text-align: left;">Hakkımızda</h2>
+                    <p><strong>[Şirket Adı]</strong>, sektörde [10] yılı aşkın tecrübesiyle, müşteri memnuniyetini her zaman ön planda tutan profesyonel bir nakliyat firmasıdır. Kurulduğumuz günden bu yana binlerce ailenin ve iş yerinin taşınma sürecini sorunsuz bir şekilde yönettik.</p>
+                    <p>Modern araç filomuz, uzman ekibimiz ve kaliteli paketleme malzemelerimiz ile eşyalarınızın güvenliğini garanti altına alıyoruz. Misyonumuz, taşınma stresini ortadan kaldırarak size keyifli bir deneyim sunmaktır.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://via.placeholder.com/500x350.png?text=Güler+Yüzlü+Ekibimiz" alt="Nakliyat Ekibi">
+                </div>
+            </div>
+        </section>
 
-        // Her bir kanal için HTML kutusu oluştur ve ekle
-        kanallar.forEach(kanal => {
-            const channelDiv = document.createElement('div');
-            channelDiv.className = 'channel-box';
-            channelDiv.setAttribute('onclick', `playStream('${kanal.tip}', '${kanal.url}')`);
-            
-            channelDiv.innerHTML = `
-                <img src="${kanal.logo}" alt="${kanal.isim} Logosu">
-                <p>${kanal.isim}</p>
-            `;
-            channelListContainer.appendChild(channelDiv);
-        });
-    });
+        <section id="why-us">
+            <div class="container">
+                 <div class="why-us-image">
+                    <img src="https://via.placeholder.com/500x350.png?text=Güvenli+Taşıma" alt="Paketleme">
+                </div>
+                <div class="why-us-text">
+                    <h2 class="section-title" style="text-align: left;">Neden Bizi Tercih Etmelisiniz?</h2>
+                    <ul>
+                        <li><strong>%100 Müşteri Memnuniyeti:</strong> Önceliğimiz sizin memnuniyetinizdir.</li>
+                        <li><strong>Sigortalı Taşımacılık:</strong> Tüm eşyalarınız taşıma süresince sigorta güvencesi altındadır.</li>
+                        <li><strong>Uzman Kadro:</strong> Alanında deneyimli ve eğitimli personel ile çalışıyoruz.</li>
+                        <li><strong>Modern Araç Filosu:</strong> Her türlü taşıma ihtiyacına uygun, yeni model araçlarımız mevcuttur.</li>
+                        <li><strong>Ücretsiz Ekspertiz:</strong> Eşyalarınızı yerinde görüp en doğru fiyat teklifini sunuyoruz.</li>
+                        <li><strong>Zamanında Teslimat:</strong> Belirlenen tarih ve saatte teslimat yapıyoruz.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-    // Bu oynatıcı fonksiyonu değişmeden kalacak
-    const playerContainer = document.getElementById('player-container');
-    let hls;
-    function playStream(type, url) {
-        playerContainer.innerHTML = '';
-        if (hls) { hls.destroy(); }
-        if (type === 'm3u8') {
-            const video = document.createElement('video');
-            video.controls = true;
-            playerContainer.appendChild(video);
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-                video.addEventListener('loadedmetadata', () => video.play());
-            }
-        } else if (type === 'iframe') {
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('allow', 'autoplay; encrypted-media');
-            iframe.setAttribute('allowfullscreen', '');
-            playerContainer.appendChild(iframe);
-        }
-    }
-</script>
+        <section id="testimonials">
+            <div class="container">
+                <h2 class="section-title">Müşterilerimiz Ne Dedi?</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <p>"Taşınma sürecimdeki tüm endişelerimi giderdiler. Ekip çok profesyonel ve hızlıydı. Her şey için teşekkürler!"</p>
+                        <p class="author">- Ayşe Yılmaz</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p>"Ofisimizi bir günde sorunsuz bir şekilde taşıdılar. Hiçbir eşyamız zarar görmedi. Kesinlikle tavsiye ederim."</p>
+                        <p class="author">- Mehmet Kaya</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p>"Fiyat teklifinden taşınmanın sonuna kadar her şey şeffaf ve planlıydı. Gözünüz kapalı güvenebilirsiniz."</p>
+                        <p class="author">- Fatma Demir</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                 <h2 class="section-title">Ücretsiz Teklif Alın</h2>
+                 <div class="contact-grid">
+                     <div class="contact-form">
+                         <h3>Bize Yazın</h3>
+                         <form>
+                             <input type="text" name="name" placeholder="Adınız Soyadınız" required>
+                             <input type="email" name="email" placeholder="E-posta Adresiniz" required>
+                             <input type="tel" name="phone" placeholder="Telefon Numaranız" required>
+                             <textarea name="message" placeholder="Mesajınız (Nereden nereye taşınacak, eşya durumu vb.)" required></textarea>
+                             <button type="submit" class="btn">Teklifi Gönder</button>
+                         </form>
+                     </div>
+                     <div class="contact-info">
+                         <h3>İletişim Bilgilerimiz</h3>
+                         <p><strong>Adres:</strong> [Buraya Adresinizi Yazın, Örn: Merkez Mah. Atatürk Cad. No:123, İstanbul]</p>
+                         <p><strong>Telefon:</strong> <a href="tel:[+905551234567]">[+90 (555) 123 45 67]</a></p>
+                         <p><strong>E-posta:</strong> <a href="mailto:info@sirketadi.com">[info@sirketadi.com]</a></p>
+                         <p>7/24 bize ulaşabilirsiniz. Ücretsiz ekspertiz hizmetimiz için hemen arayın!</p>
+                     </div>
+                 </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 [Şirket Adı] | Tüm Hakları Saklıdır.</p>
+        </div>
+    </footer>
 
 </body>
 </html>
