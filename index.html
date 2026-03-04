@@ -3,125 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dijital Lisans Pazarı | omercansiskolu.com.tr</title>
+    <title>Dijital Lisans Mağazası | omercansiskolu.com.tr</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #007bff;
-            --secondary-color: #e1306c; /* Instagram Rengi */
-            --bg-light: #f8f9fa;
-            --text-dark: #212529;
+            --primary: #2563eb;
+            --accent: #e1306c;
+            --dark: #0f172a;
+            --light: #f8fafc;
         }
-        body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
-        header { background: #111; color: white; padding: 40px 20px; text-align: center; }
-        .container { max-width: 1100px; margin: auto; padding: 20px; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: var(--light); color: var(--dark); }
+        header { background: var(--dark); color: white; padding: 60px 20px; text-align: center; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
         
-        /* Kategori Başlıkları */
-        .category-title { border-left: 5px solid var(--primary-color); padding-left: 15px; margin: 40px 0 20px; font-size: 24px; }
+        .cat-section { margin-bottom: 50px; }
+        .cat-header { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; padding-bottom: 10px; font-weight: 600; color: var(--primary); }
 
-        /* Ürün Izgarası */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 12px; padding: 25px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        .card h3 { font-size: 18px; margin-bottom: 10px; min-height: 50px; }
-        .price { font-size: 26px; font-weight: bold; color: #28a745; margin: 15px 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 12px; padding: 20px; text-align: center; transition: 0.3s; border: 1px solid #edf2f7; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .product-card h4 { font-size: 16px; margin: 10px 0; height: 45px; overflow: hidden; }
+        .price { font-size: 22px; font-weight: bold; color: #059669; margin-bottom: 15px; }
         
-        /* Butonlar */
-        .btn { display: inline-block; background: var(--secondary-color); color: white; padding: 12px 25px; text-decoration: none; border-radius: 30px; font-weight: 600; transition: 0.3s; }
-        .btn:hover { background: #c13584; opacity: 0.9; }
-
-        footer { text-align: center; padding: 40px; color: #777; font-size: 14px; }
+        .buy-btn { 
+            display: block; 
+            background: var(--accent); 
+            color: white; 
+            text-decoration: none; 
+            padding: 10px; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            font-weight: 600;
+        }
+        footer { background: #1e293b; color: #94a3b8; text-align: center; padding: 30px; margin-top: 50px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Dijital Lisans Merkezi</h1>
-    <p>Orijinal Yazılımlar, En Uygun Fiyatlar</p>
+    <h1>Dijital Lisans Pazarı</h1>
+    <p>Windows, Office, Antivirüs ve Pro Yazılımlarda En İyi Fiyatlar</p>
 </header>
 
 <div class="container">
-    
-    <h2 class="category-title">İşletim Sistemleri</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>Windows 11 Pro Dijital Lisans</h3>
-            <div class="price">129.90 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>Windows 10 Pro Dijital Lisans</h3>
-            <div class="price">99.90 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>Windows 11 Home Retail</h3>
-            <div class="price">119.90 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
+
+    <div class="cat-section">
+        <h2 class="cat-header">İşletim Sistemleri (Windows & Server)</h2>
+        <div class="grid">
+            <div class="product-card"><h4>Windows 11 Pro Retail</h4><div class="price">129 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Windows 10 Pro Retail</h4><div class="price">99 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Windows 10 Home</h4><div class="price">89 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Windows Server 2022 Standard</h4><div class="price">450 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
         </div>
     </div>
 
-    <h2 class="category-title">Office Yazılımları</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>Office 2021 Pro Plus (LTSC)</h3>
-            <div class="price">189.90 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>Office 2019 Pro Plus</h3>
-            <div class="price">149.90 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>Office 365 1 Yıllık Hesap</h3>
-            <div class="price">179.90 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
+    <div class="cat-section">
+        <h2 class="cat-header">Microsoft Office Paketleri</h2>
+        <div class="grid">
+            <div class="product-card"><h4>Office 2021 Pro Plus</h4><div class="price">189 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Office 2019 Pro Plus</h4><div class="price">149 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Office 365 5 Cihaz / 1 Yıl</h4><div class="price">199 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Office 2021 Mac Lisans</h4><div class="price">299 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Microsoft Visio 2021 Pro</h4><div class="price">120 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Microsoft Project 2021 Pro</h4><div class="price">120 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
         </div>
     </div>
 
-    <h2 class="category-title">Antivirüs & Güvenlik</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>Kaspersky Premium 1 Yıl</h3>
-            <div class="price">249.00 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>ESET NOD32 Internet Security</h3>
-            <div class="price">199.00 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>Bitdefender Total Security</h3>
-            <div class="price">229.00 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
+    <div class="cat-section">
+        <h2 class="cat-header">Güvenlik & Antivirüs</h2>
+        <div class="grid">
+            <div class="product-card"><h4>Kaspersky Total Security 1 Yıl</h4><div class="price">249 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>ESET Internet Security 1 Yıl</h4><div class="price">199 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>McAfee Total Protection</h4><div class="price">149 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Norton 360 Deluxe</h4><div class="price">210 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
         </div>
     </div>
 
-    <h2 class="category-title">Tasarım & Proje</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>Autodesk AutoCAD 2025</h3>
-            <div class="price">499.00 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
+    <div class="cat-section">
+        <h2 class="cat-header">VPN & Diğer Araçlar</h2>
+        <div class="grid">
+            <div class="product-card"><h4>AdGuard Premium Ömür Boyu</h4><div class="price">150 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>NordVPN 1 Yıllık Hesap</h4><div class="price">299 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Canva Pro (Kendi Hesabınıza)</h4><div class="price">79 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Spotify Premium 1 Yıl</h4><div class="price">180 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
         </div>
-        <div class="card">
-            <h3>Adobe Creative Cloud (1 Ay)</h3>
-            <div class="price">349.00 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
-        </div>
-        <div class="card">
-            <h3>IDM (Internet Download Manager)</h3>
-            <div class="price">139.00 ₺</div>
-            <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan SATIN AL</a>
+    </div>
+
+    <div class="cat-section">
+        <h2 class="cat-header">Tasarım & Mühendislik</h2>
+        <div class="grid">
+            <div class="product-card"><h4>Autodesk AutoCAD 2025</h4><div class="price">450 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>CorelDRAW Graphics Suite</h4><div class="price">399 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
+            <div class="product-card"><h4>Adobe Master Collection</h4><div class="price">550 TL</div><a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a></div>
         </div>
     </div>
 
 </div>
 
 <footer>
-    <p>&copy; 2026 omercansiskolu.com.tr - Tüm lisanslar dijital teslimattır.</p>
+    <p>&copy; 2026 omercansiskolu.com.tr | Güvenli ve Hızlı Teslimat</p>
 </footer>
 
 </body>
 </html>
+ 
