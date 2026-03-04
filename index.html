@@ -3,79 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>omercansiskolu | Premium Dijital Lisans Merkezi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>omercansiskolu | Lisans Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --secondary: #ec4899;
             --dark: #0f172a;
-            --light: #f8fafc;
+            --bg: #f8fafc;
             --border: #e2e8f0;
-            --success: #10b981;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--light); color: var(--dark); line-height: 1.6; }
-        
-        /* Smooth Scroll */
-        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--dark); overflow-x: hidden; }
 
-        /* Navigation */
-        nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 1rem 10%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--dark); text-decoration: none; letter-spacing: -1px; }
+        /* Navigation - Kategori Seçici */
+        nav { 
+            background: white; 
+            padding: 1rem 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: var(--dark); }
         .logo span { color: var(--primary); }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: #64748b; font-size: 0.95rem; font-weight: 600; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
 
-        /* Hero Section */
-        .hero { padding: 120px 10% 80px; text-align: center; background: radial-gradient(circle at top right, #e0e7ff, transparent), radial-gradient(circle at bottom left, #fce7f3, transparent); }
-        .hero h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 1.5rem; }
-        .hero p { font-size: 1.25rem; color: #475569; max-width: 700px; margin: 0 auto 2.5rem; }
-        .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3rem; }
-        .stat-item b { font-size: 1.5rem; display: block; color: var(--primary); }
-        .stat-item span { font-size: 0.9rem; color: #64748b; font-weight: 500; }
+        .nav-links { display: flex; gap: 10px; }
+        .nav-links button {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            transition: 0.3s;
+        }
+        .nav-links button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
 
-        .container { max-width: 1300px; margin: 0 auto; padding: 0 5%; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; min-height: 60vh; }
 
-        /* Section Headings */
-        .section-title { margin: 80px 0 40px; display: flex; align-items: flex-end; justify-content: space-between; }
-        .section-title h2 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; }
-        .section-title span { color: var(--primary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
+        /* Kategori Bölümleri - Gizleme Mantığı */
+        .category-content {
+            display: none; /* Varsayılan olarak kapalı */
+            animation: fadeIn 0.5s ease;
+        }
+        .category-content.active {
+            display: block; /* Sadece aktif olan görünür */
+        }
 
-        /* Product Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        .card { background: white; border: 1px solid var(--border); border-radius: 24px; padding: 32px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-12px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(79, 70, 229, 0.08); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header { margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+
+        /* Ürün Kartları */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 25px; 
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card h3 { font-size: 1.1rem; margin-bottom: 15px; color: #1e293b; }
+        .price-tag { font-size: 1.6rem; font-weight: 800; color: #10b981; margin-bottom: 20px; display: block; }
         
-        .card-tag { position: absolute; top: 20px; right: 20px; background: #f0fdf4; color: var(--success); font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 100px; }
-        .card-category { color: var(--primary); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; display: block; }
-        .card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b; min-height: 3.5rem; }
-        
-        .price-group { margin-top: auto; padding-top: 24px; border-top: 1px solid #f1f5f9; }
-        .old-price { font-size: 0.9rem; color: #94a3b8; text-decoration: line-through; }
-        .new-price { font-size: 2rem; font-weight: 800; color: var(--dark); display: block; margin: 4px 0 20px; }
-        
-        .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 16px; background: var(--dark); color: white; text-decoration: none; border-radius: 14px; font-weight: 700; transition: 0.3s; }
-        .btn:hover { background: var(--primary); transform: scale(1.02); }
+        .buy-btn {
+            background: var(--dark);
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .buy-btn:hover { background: #e1306c; transform: scale(1.03); }
 
-        /* Trust Badges */
-        .trust-section { background: #fff; padding: 60px 0; border-top: 1px solid var(--border); margin-top: 100px; }
-        .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; text-align: center; }
-        .trust-item h4 { margin-bottom: 8px; font-weight: 700; }
-        .trust-item p { font-size: 0.85rem; color: #64748b; }
-
-        footer { background: var(--dark); color: #94a3b8; padding: 80px 10% 40px; }
-        .footer-content { display: flex; justify-content: space-between; margin-bottom: 60px; }
-        .footer-logo { color: white; font-size: 1.5rem; font-weight: 800; text-decoration: none; }
-        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 40px; text-align: center; font-size: 0.85rem; }
+        footer { text-align: center; padding: 60px; color: #94a3b8; font-size: 0.9rem; }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .nav-links { display: none; }
-            .trust-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-links { overflow-x: auto; padding-bottom: 10px; width: 100%; justify-content: flex-start; }
+            .nav-links button { white-space: nowrap; }
+            nav { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
@@ -84,146 +108,116 @@
 <nav>
     <a href="#" class="logo">omercan<span>siskolu</span></a>
     <div class="nav-links">
-        <a href="#windows">Windows</a>
-        <a href="#office">Office</a>
-        <a href="#antivirus">Antivirüs</a>
-        <a href="#tasarim">Tasarım</a>
-        <a href="#ai">AI Tools</a>
+        <button onclick="showCategory('windows', this)" class="active">Windows</button>
+        <button onclick="showCategory('microsoft', this)">Microsoft</button>
+        <button onclick="showCategory('antivirus', this)">Antivirüs & VPN</button>
+        <button onclick="showCategory('tasarim', this)">Tasarım</button>
+        <button onclick="showCategory('yapayzeka', this)">Yapay Zeka</button>
     </div>
 </nav>
 
-<section class="hero">
-    <div class="container">
-        <h1>Dijital Lisanslarda<br><span>Premium Deneyim.</span></h1>
-        <p>En popüler yazılımları, orijinal lisans anahtarları ve anında teslimat garantisi ile omercansiskolu farkıyla edinin.</p>
-        <div class="hero-stats">
-            <div class="stat-item"><b>15dk</b><span>Ortalama Teslimat</span></div>
-            <div class="stat-item"><b>%100</b><span>Orijinal Ürün</span></div>
-            <div class="stat-item"><b>24/7</b><span>Canlı Destek</span></div>
-        </div>
-    </div>
-</section>
-
 <div class="container">
-    
-    <section id="windows">
-        <div class="section-title">
-            <h2>İşletim Sistemleri</h2>
-            <span>Windows & Server</span>
-        </div>
+
+    <div id="windows" class="category-content active">
+        <div class="section-header"><h2>Windows İşletim Sistemleri</h2></div>
         <div class="grid">
             <div class="card">
-                <span class="card-tag">Stokta Var</span>
-                <span class="card-category">Windows</span>
-                <h3>Windows 11 Pro Dijital Lisans Anahtarı</h3>
-                <div class="price-group">
-                    <span class="old-price">349 TL</span>
-                    <span class="new-price">129.90 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
+                <h3>Windows 11 Pro Dijital Lisans</h3>
+                <span class="price-tag">129.90 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
             </div>
             <div class="card">
-                <span class="card-tag">Çok Satan</span>
-                <span class="card-category">Windows</span>
-                <h3>Windows 10 Pro Retail Lisans Anahtarı</h3>
-                <div class="price-group">
-                    <span class="old-price">289 TL</span>
-                    <span class="new-price">99.90 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
+                <h3>Windows 10 Pro Retail Lisans</h3>
+                <span class="price-tag">99.90 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
             </div>
-            <div class="card">
-                <span class="card-category">Server</span>
-                <h3>Windows Server 2022 Standard Lisans</h3>
-                <div class="price-group">
-                    <span class="old-price">850 TL</span>
-                    <span class="new-price">449.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="office">
-        <div class="section-title">
-            <h2>Üretkenlik Araçları</h2>
-            <span>Microsoft Office</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Ömür Boyu</span>
-                <span class="card-category">Office</span>
-                <h3>Microsoft Office 2021 Professional Plus</h3>
-                <div class="price-group">
-                    <span class="old-price">499 TL</span>
-                    <span class="new-price">189.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Office</span>
-                <h3>Microsoft 365 Bireysel (1 Yıllık)</h3>
-                <div class="price-group">
-                    <span class="old-price">399 TL</span>
-                    <span class="new-price">179.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="ai">
-        <div class="section-title">
-            <h2>Yaratıcı Çözümler</h2>
-            <span>AI & Tasarım</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Popüler</span>
-                <span class="card-category">AI</span>
-                <h3>ChatGPT Plus Aylık Paylaşımlı</h3>
-                <div class="price-group">
-                    <span class="old-price">249 TL</span>
-                    <span class="new-price">149.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Design</span>
-                <h3>Canva Pro (Kendi Hesabınıza Tanımlı)</h3>
-                <div class="price-group">
-                    <span class="old-price">149 TL</span>
-                    <span class="new-price">79.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-</div>
-
-<div class="trust-section">
-    <div class="container">
-        <div class="trust-grid">
-            <div class="trust-item"><h4>Hızlı Onay</h4><p>Sipariş anında işlenir.</p></div>
-            <div class="trust-item"><h4>7/24 Destek</h4><p>Kurulum yardımı ücretsizdir.</p></div>
-            <div class="trust-item"><h4>Güvenli Alışveriş</h4><p>SSL korumalı işlemler.</p></div>
-            <div class="trust-item"><h4>Mutlu Müşteri</h4><p>Binlerce başarılı teslimat.</p></div>
         </div>
     </div>
+
+    <div id="microsoft" class="category-content">
+        <div class="section-header"><h2>Microsoft Office</h2></div>
+        <div class="grid">
+            <div class="card">
+                <h3>Office 2021 Professional Plus</h3>
+                <span class="price-tag">189.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+            <div class="card">
+                <h3>Microsoft 365 Bireysel (1 Yıl)</h3>
+                <span class="price-tag">179.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="antivirus" class="category-content">
+        <div class="section-header"><h2>Antivirüs & VPN</h2></div>
+        <div class="grid">
+            <div class="card">
+                <h3>Kaspersky Premium (1 Yıl)</h3>
+                <span class="price-tag">249.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+            <div class="card">
+                <h3>NordVPN 1 Yıllık Lisans</h3>
+                <span class="price-tag">299.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="tasarim" class="category-content">
+        <div class="section-header"><h2>Tasarım Araçları</h2></div>
+        <div class="grid">
+            <div class="card">
+                <h3>Adobe Creative Cloud (1 Yıllık)</h3>
+                <span class="price-tag">899.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+            <div class="card">
+                <h3>Canva Pro (Kendi Hesabınıza)</h3>
+                <span class="price-tag">79.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="yapayzeka" class="category-content">
+        <div class="section-header"><h2>Yapay Zeka</h2></div>
+        <div class="grid">
+            <div class="card">
+                <h3>ChatGPT Plus Paylaşımlı Üyelik</h3>
+                <span class="price-tag">149.00 ₺</span>
+                <a href="https://instagram.com/omercansiskolu" class="buy-btn">SATIN AL</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <footer>
-    <div class="footer-content">
-        <a href="#" class="footer-logo">omercan<span>siskolu</span></a>
-        <div>
-            <p>Lisanslar dijital ürünlerdir, kargo ile gönderim yapılmaz.</p>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 omercansiskolu.com.tr. Tüm hakları saklıdır.</p>
-    </div>
+    <p>&copy; 2026 omercansiskolu.com.tr | Dijital Ürünler Anında Teslim</p>
 </footer>
+
+<script>
+    function showCategory(categoryId, element) {
+        // 1. Tüm içerikleri gizle
+        const contents = document.querySelectorAll('.category-content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        // 2. Tüm butonların aktiflik sınıflarını kaldır
+        const buttons = document.querySelectorAll('.nav-links button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // 3. Seçilen içeriği göster ve butonu aktif yap
+        document.getElementById(categoryId).classList.add('active');
+        element.classList.add('active');
+
+        // 4. Sayfayı yukarı odakla (isteğe bağlı)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
 
 </body>
 </html>
+ 
