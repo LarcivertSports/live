@@ -2,350 +2,82 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>omercansiskolu | Premium Dijital Lisans Merkezi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini IPTV Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --secondary: #ec4899;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --border: #e2e8f0;
-            --success: #10b981;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--light); color: var(--dark); line-height: 1.5; overflow-x: hidden; }
-        
-        html { scroll-behavior: smooth; }
-
-        /* --- NAVIGATION --- */
-        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.3rem; font-weight: 800; color: var(--dark); text-decoration: none; letter-spacing: -1px; flex-shrink: 0; }
-        .logo span { color: var(--primary); }
-        
-        .nav-links { display: flex; gap: 1.5rem; overflow-x: auto; white-space: nowrap; padding-bottom: 2px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .nav-links::-webkit-scrollbar { display: none; } /* Scrollbar'ı gizle */
-        .nav-links { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .nav-links a { text-decoration: none; color: #64748b; font-size: 0.9rem; font-weight: 600; transition: 0.3s; padding-bottom: 4px; cursor: pointer; border-bottom: 2px solid transparent; }
-        .nav-links a:hover { color: var(--primary); }
-        .nav-links a.active-nav { color: var(--primary); border-bottom: 2px solid var(--primary); }
-
-        /* --- HERO SECTION --- */
-        .hero { padding: 40px 5% 30px; text-align: center; background: radial-gradient(circle at top right, #e0e7ff, transparent), radial-gradient(circle at bottom left, #fce7f3, transparent); }
-        .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; line-height: 1.2; margin-bottom: 1rem; }
-        .hero p { font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto 1.5rem; }
-        .hero-stats { display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem; margin-top: 1rem; }
-        .stat-item b { font-size: 1.2rem; display: block; color: var(--primary); }
-        .stat-item span { font-size: 0.8rem; color: #64748b; font-weight: 500; }
-
-        /* --- CONTAINER & SECTIONS --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
-        .category-section { display: none; animation: fadeIn 0.4s ease forwards; }
-        .category-section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-title { margin: 30px 0 15px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 5px; }
-        .section-title h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
-        .section-title span { color: var(--primary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
-
-        /* --- PRODUCT CARDS (GRID) --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 20px; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; display: flex; flex-direction: column; height: 100%; }
-        .card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(79, 70, 229, 0.08); }
-        
-        .card-tag { position: absolute; top: 15px; right: 15px; background: #f0fdf4; color: var(--success); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; z-index: 1; }
-        .card-category { color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
-        .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: #1e293b; min-height: 2.5rem; line-height: 1.3; }
-        
-        .price-group { margin-top: auto; padding-top: 15px; border-top: 1px solid #f1f5f9; }
-        .old-price { font-size: 0.85rem; color: #94a3b8; text-decoration: line-through; }
-        .new-price { font-size: 1.5rem; font-weight: 800; color: var(--dark); display: block; margin: 2px 0 12px; }
-        
-        .btn { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: var(--dark); color: white; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; transition: background 0.3s; cursor: pointer; text-align: center; }
-        .btn:hover { background: var(--primary); }
-
-        /* --- TRUST BADGES --- */
-        .trust-section { background: #fff; padding: 30px 0; border-top: 1px solid var(--border); margin-top: 40px; }
-        .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; }
-        .trust-item h4 { margin-bottom: 4px; font-weight: 700; font-size: 0.95rem; }
-        .trust-item p { font-size: 0.8rem; color: #64748b; }
-
-        /* --- FOOTER --- */
-        footer { background: var(--dark); color: #94a3b8; padding: 40px 5% 20px; }
-        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .footer-logo { color: white; font-size: 1.3rem; font-weight: 800; text-decoration: none; }
-        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 20px; text-align: center; font-size: 0.8rem; }
-
-
-        /* =========================================
-           RESPONSIVE AYARLAR (MOBİL & TABLET UYUMU)
-           ========================================= */
-
-        /* Tablet Boyutu (992px altı) */
-        @media (max-width: 992px) {
-            .hero h1 { font-size: 2.2rem; }
-            .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-            .trust-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        }
-
-        /* Mobil Telefonlar (768px altı) */
-        @media (max-width: 768px) {
-            nav { flex-direction: column; align-items: flex-start; gap: 12px; padding: 1rem 5%; }
-            .logo { align-self: center; margin-bottom: 5px; }
-            .nav-links { width: 100%; gap: 1.2rem; justify-content: flex-start; }
-            
-            .hero { padding: 30px 5% 20px; }
-            .hero h1 { font-size: 1.8rem; }
-            .hero p { font-size: 0.95rem; }
-            .hero-stats { gap: 1.5rem; }
-            
-            .section-title h2 { font-size: 1.3rem; }
-            .section-title { flex-direction: column; align-items: flex-start; }
-            
-            .footer-content { flex-direction: column; text-align: center; justify-content: center; }
-            .footer-logo { margin-bottom: 10px; }
-        }
-
-        /* Çok Küçük Ekranlar (480px altı - iPhone SE vb.) */
-        @media (max-width: 480px) {
-            .grid { grid-template-columns: 1fr; } /* Kartlar tam genişlik kaplar */
-            .trust-grid { grid-template-columns: 1fr; gap: 15px; } /* Güvenlik kutuları alt alta geçer */
-            .hero-stats { gap: 1rem; justify-content: space-evenly; }
-            .stat-item b { font-size: 1.1rem; }
-            .card { padding: 15px; }
-        }
+        body { font-family: sans-serif; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; margin: 0; }
+        #player-container { width: 100%; max-width: 800px; margin-top: 20px; }
+        video { width: 100%; border-radius: 8px; background: black; }
+        #playlist { width: 100%; max-width: 800px; height: 400px; overflow-y: auto; margin-top: 20px; border: 1px solid #333; padding: 10px; border-radius: 8px; }
+        .channel-item { padding: 10px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .channel-item:hover { background: #333; }
+        h1 { color: #00d1b2; }
     </style>
 </head>
 <body>
 
-<nav>
-    <a href="#" class="logo">omercan<span>siskolu</span></a>
-    <div class="nav-links">
-        <a data-target="windows" class="nav-btn active-nav">Windows</a>
-        <a data-target="office" class="nav-btn">Office</a>
-        <a data-target="antivirus" class="nav-btn">Antivirüs</a>
-        <a data-target="tasarim" class="nav-btn">Tasarım</a>
-        <a data-target="ai" class="nav-btn">AI Tools</a>
+    <h1>IPTV Player</h1>
+
+    <div id="player-container">
+        <video id="video" controls></video>
     </div>
-</nav>
 
-<section class="hero">
-    <div class="container">
-        <h1>Dijital Lisanslarda<br><span>Premium Deneyim.</span></h1>
-        <p>En popüler yazılımları, orijinal lisans anahtarları ve anında teslimat garantisi ile edinin.</p>
-        <div class="hero-stats">
-            <div class="stat-item"><b>15dk</b><span>Ortalama Teslimat</span></div>
-            <div class="stat-item"><b>%100</b><span>Orijinal Ürün</span></div>
-            <div class="stat-item"><b>24/7</b><span>Canlı Destek</span></div>
-        </div>
-    </div>
-</section>
+    <div id="playlist">Kanal listesi yükleniyor...</div>
 
-<div class="container" id="product-container">
-    
-    <section id="windows" class="category-section active">
-        <div class="section-title">
-            <h2>İşletim Sistemleri</h2>
-            <span>Windows & Server</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Stokta Var</span>
-                <span class="card-category">Windows</span>
-                <h3>Windows 11 Pro Dijital Lisans Anahtarı</h3>
-                <div class="price-group">
-                    <span class="old-price">349 TL</span>
-                    <span class="new-price">129.90 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-tag">Çok Satan</span>
-                <span class="card-category">Windows</span>
-                <h3>Windows 10 Pro Retail Lisans Anahtarı</h3>
-                <div class="price-group">
-                    <span class="old-price">289 TL</span>
-                    <span class="new-price">99.90 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Server</span>
-                <h3>Windows Server 2022 Standard Lisans</h3>
-                <div class="price-group">
-                    <span class="old-price">850 TL</span>
-                    <span class="new-price">449.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script>
+        const m3uUrl = 'https://raw.githubusercontent.com/LarcivertSports/omercan/refs/heads/main/omarcan.m3u';
+        const video = document.getElementById('video');
+        const playlistEl = document.getElementById('playlist');
 
-    <section id="office" class="category-section">
-        <div class="section-title">
-            <h2>Üretkenlik Araçları</h2>
-            <span>Microsoft Office</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Ömür Boyu</span>
-                <span class="card-category">Office</span>
-                <h3>Microsoft Office 2021 Professional Plus</h3>
-                <div class="price-group">
-                    <span class="old-price">499 TL</span>
-                    <span class="new-price">189.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Office</span>
-                <h3>Microsoft 365 Bireysel (1 Yıllık)</h3>
-                <div class="price-group">
-                    <span class="old-price">399 TL</span>
-                    <span class="new-price">179.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
+        // M3U dosyasını çek ve parçala
+        async function fetchPlaylist() {
+            try {
+                const response = await fetch(m3uUrl);
+                const data = await response.text();
+                parseM3U(data);
+            } catch (error) {
+                playlistEl.innerText = "Liste yüklenirken hata oluştu (CORS engeli olabilir).";
+            }
+        }
 
-    <section id="antivirus" class="category-section">
-        <div class="section-title">
-            <h2>Güvenlik Yazılımları</h2>
-            <span>Antivirüs & VPN</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Tam Koruma</span>
-                <span class="card-category">Antivirüs</span>
-                <h3>Kaspersky Total Security (1 Yıl)</h3>
-                <div class="price-group">
-                    <span class="old-price">450 TL</span>
-                    <span class="new-price">249.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Antivirüs</span>
-                <h3>ESET Internet Security (1 Yıl)</h3>
-                <div class="price-group">
-                    <span class="old-price">350 TL</span>
-                    <span class="new-price">199.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
+        function parseM3U(data) {
+            const lines = data.split('\n');
+            let channels = [];
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].startsWith('#EXTINF')) {
+                    const name = lines[i].split(',')[1] || "Bilinmeyen Kanal";
+                    const url = lines[i + 1]?.trim();
+                    if (url) channels.push({ name, url });
+                }
+            }
+            renderPlaylist(channels);
+        }
 
-    <section id="tasarim" class="category-section">
-        <div class="section-title">
-            <h2>Tasarım Araçları</h2>
-            <span>Grafik & Çizim</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Profesyonel</span>
-                <span class="card-category">Design</span>
-                <h3>Adobe Creative Cloud (1 Yıllık)</h3>
-                <div class="price-group">
-                    <span class="old-price">1499 TL</span>
-                    <span class="new-price">899.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Design</span>
-                <h3>Autodesk AutoCAD 2025</h3>
-                <div class="price-group">
-                    <span class="old-price">850 TL</span>
-                    <span class="new-price">499.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="ai" class="category-section">
-        <div class="section-title">
-            <h2>Yaratıcı Çözümler</h2>
-            <span>Yapay Zeka Servisleri</span>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag">Popüler</span>
-                <span class="card-category">AI</span>
-                <h3>ChatGPT Plus Aylık Paylaşımlı</h3>
-                <div class="price-group">
-                    <span class="old-price">249 TL</span>
-                    <span class="new-price">149.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-            <div class="card">
-                <span class="card-category">Design</span>
-                <h3>Canva Pro (Kendi Hesabınıza Tanımlı)</h3>
-                <div class="price-group">
-                    <span class="old-price">149 TL</span>
-                    <span class="new-price">79.00 TL</span>
-                    <a href="https://instagram.com/omercansiskolu" class="btn">Instagram'dan Satın Al</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-</div>
-
-<div class="trust-section">
-    <div class="container">
-        <div class="trust-grid">
-            <div class="trust-item"><h4>Hızlı Onay</h4><p>Sipariş anında işlenir.</p></div>
-            <div class="trust-item"><h4>7/24 Destek</h4><p>Kurulum yardımı ücretsizdir.</p></div>
-            <div class="trust-item"><h4>Güvenli Alışveriş</h4><p>SSL korumalı işlemler.</p></div>
-            <div class="trust-item"><h4>Mutlu Müşteri</h4><p>Binlerce başarılı teslimat.</p></div>
-        </div>
-    </div>
-</div>
-
-<footer>
-    <div class="footer-content">
-        <a href="#" class="footer-logo">omercan<span>siskolu</span></a>
-        <div>
-            <p>Lisanslar dijital ürünlerdir, kargo ile gönderim yapılmaz.</p>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 omercansiskolu.com.tr. Tüm hakları saklıdır.</p>
-    </div>
-</footer>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const navLinks = document.querySelectorAll('.nav-btn');
-        const sections = document.querySelectorAll('.category-section');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault(); 
-                const targetId = this.getAttribute('data-target');
-                
-                navLinks.forEach(nav => nav.classList.remove('active-nav'));
-                sections.forEach(section => section.classList.remove('active'));
-                
-                this.classList.add('active-nav');
-                document.getElementById(targetId).classList.add('active');
+        function renderPlaylist(channels) {
+            playlistEl.innerHTML = '';
+            channels.forEach(channel => {
+                const div = document.createElement('div');
+                div.className = 'channel-item';
+                div.innerText = channel.name;
+                div.onclick = () => playStream(channel.url);
+                playlistEl.appendChild(div);
             });
-        });
-    });
-</script>
+        }
 
+        function playStream(url) {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.play();
+            }
+        }
+
+        fetchPlaylist();
+    </script>
 </body>
 </html>
- 
