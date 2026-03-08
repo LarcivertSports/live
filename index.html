@@ -3,81 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini IPTV Player</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Canlı Yayın Oynatıcı</title>
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
     <style>
-        body { font-family: sans-serif; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; margin: 0; }
-        #player-container { width: 100%; max-width: 800px; margin-top: 20px; }
-        video { width: 100%; border-radius: 8px; background: black; }
-        #playlist { width: 100%; max-width: 800px; height: 400px; overflow-y: auto; margin-top: 20px; border: 1px solid #333; padding: 10px; border-radius: 8px; }
-        .channel-item { padding: 10px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
-        .channel-item:hover { background: #333; }
-        h1 { color: #00d1b2; }
+        body { background-color: #1a1a1a; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { width: 80%; max-width: 800px; text-align: center; }
+        video { width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { margin-bottom: 20px; color: #00ffcc; }
     </style>
 </head>
 <body>
 
-    <h1>IPTV Player</h1>
+<div class="container">
+    <h2>ZeusTV Canlı Akış</h2>
+    <video id="video" controls></video>
+</div>
 
-    <div id="player-container">
-        <video id="video" controls></video>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-    <div id="playlist">Kanal listesi yükleniyor...</div>
+<script>
+  var video = document.getElementById('video');
+  // Senin paylaştığın URL
+  var videoSrc = 'https://zeustv432423.info/b1local/tracks-v1a1/mono.ts.m3u8';
 
-    <script>
-        const m3uUrl = 'https://raw.githubusercontent.com/primatzeka/kurbaga/main/NeonSpor/NeonSpor.m3u';
-        const video = document.getElementById('video');
-        const playlistEl = document.getElementById('playlist');
+  if (Hls.isSupported()) {
+    var hls = new Hls();
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      video.play();
+    });
+  }
+  // Safari gibi HLS'yi yerel destekleyen tarayıcılar için
+  else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = videoSrc;
+    video.addEventListener('loadedmetadata', function() {
+      video.play();
+    });
+  }
+</script>
 
-        // M3U dosyasını çek ve parçala
-        async function fetchPlaylist() {
-            try {
-                const response = await fetch(m3uUrl);
-                const data = await response.text();
-                parseM3U(data);
-            } catch (error) {
-                playlistEl.innerText = "Liste yüklenirken hata oluştu (CORS engeli olabilir).";
-            }
-        }
-
-        function parseM3U(data) {
-            const lines = data.split('\n');
-            let channels = [];
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i].startsWith('#EXTINF')) {
-                    const name = lines[i].split(',')[1] || "Bilinmeyen Kanal";
-                    const url = lines[i + 1]?.trim();
-                    if (url) channels.push({ name, url });
-                }
-            }
-            renderPlaylist(channels);
-        }
-
-        function renderPlaylist(channels) {
-            playlistEl.innerHTML = '';
-            channels.forEach(channel => {
-                const div = document.createElement('div');
-                div.className = 'channel-item';
-                div.innerText = channel.name;
-                div.onclick = () => playStream(channel.url);
-                playlistEl.appendChild(div);
-            });
-        }
-
-        function playStream(url) {
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-                video.play();
-            }
-        }
-
-        fetchPlaylist();
-    </script>
 </body>
 </html>
