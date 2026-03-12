@@ -1,3 +1,177 @@
-<a href="https://t.me/bstvhd4k1?livestream" target="_blank" style="background-color: #0088cc; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-family: Arial, sans-serif;">
-  🔴 Telegram Canlı Yayınına Katıl
-</a>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı TV Kanalları</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #1a2035;
+            --card-hover: #232b47;
+            --text-color: #ffffff;
+            --text-muted: #8b92a5;
+            --badge-bg: #ef4444;
+            --border-color: #2a3045;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .channel-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+            transition: all 0.3s ease;
+            height: 120px;
+            cursor: pointer;
+        }
+
+        .channel-card:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--badge-bg);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .channel-logo {
+            max-width: 80%;
+            max-height: 50px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .channel-name {
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+
+        /* Responsive ayarlar */
+        @media (min-width: 768px) {
+            .channel-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📺 Canlı TV Kanalları</h1>
+        <p>İzlemek istediğiniz kanalı seçin ve canlı yayını başlatın</p>
+    </div>
+
+    <div class="channel-grid" id="channelGrid">
+        </div>
+
+    <script>
+        // İframe linklerini ve logoları sonradan buraya entegre edebilirsin
+        // Şimdilik linkler "#", logolar ise yer tutucu (placeholder) olarak ayarlandı.
+        const channels = [
+            { name: "beIN SPORTS 1", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=beIN+SPORTS+1" },
+            { name: "beIN SPORTS 2", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=beIN+SPORTS+2" },
+            { name: "beIN SPORTS 3", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=beIN+SPORTS+3" },
+            { name: "beIN SPORTS 4", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=beIN+SPORTS+4" },
+            { name: "beIN SPORTS 5", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=beIN+SPORTS+5" },
+            { name: "beIN SPORTS MAX 1", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=MAX+1" },
+            { name: "beIN SPORTS MAX 2", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=MAX+2" },
+            { name: "EXXEN 1", link: "#", logo: "https://placehold.co/120x40/1a2035/FFD700?text=EXXEN" },
+            { name: "EXXEN 2", link: "#", logo: "https://placehold.co/120x40/1a2035/FFD700?text=EXXEN" },
+            { name: "EXXEN 3", link: "#", logo: "https://placehold.co/120x40/1a2035/FFD700?text=EXXEN" },
+            { name: "EXXEN 4", link: "#", logo: "https://placehold.co/120x40/1a2035/FFD700?text=EXXEN" },
+            { name: "EXXEN 5", link: "#", logo: "https://placehold.co/120x40/1a2035/FFD700?text=EXXEN" },
+            { name: "SMART SPOR", link: "#", logo: "https://placehold.co/120x40/1a2035/00BFFF?text=SMART+SPOR" },
+            { name: "SMART SPOR 2", link: "#", logo: "https://placehold.co/120x40/1a2035/00BFFF?text=SMART+SPOR+2" },
+            { name: "S SPORT", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=S+SPORT" },
+            { name: "S SPORT 2", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=S+SPORT+2" },
+            { name: "S SPORT +", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=S+SPORT++" },
+            { name: "TABİİ 1", link: "#", logo: "https://placehold.co/120x40/1a2035/00FF7F?text=TABII" },
+            { name: "TABİİ 2", link: "#", logo: "https://placehold.co/120x40/1a2035/00FF7F?text=TABII" },
+            { name: "TABİİ 3", link: "#", logo: "https://placehold.co/120x40/1a2035/00FF7F?text=TABII" },
+            { name: "TABİİ 4", link: "#", logo: "https://placehold.co/120x40/1a2035/00FF7F?text=TABII" },
+            { name: "TABİİ 5", link: "#", logo: "https://placehold.co/120x40/1a2035/00FF7F?text=TABII" },
+            { name: "TİVİBU SPOR", link: "#", logo: "https://placehold.co/120x40/1a2035/00CED1?text=TIVIBU" },
+            { name: "TİVİBU SPOR 2", link: "#", logo: "https://placehold.co/120x40/1a2035/00CED1?text=TIVIBU+2" },
+            { name: "TİVİBU SPOR 3", link: "#", logo: "https://placehold.co/120x40/1a2035/00CED1?text=TIVIBU+3" },
+            { name: "TİVİBU SPOR 4", link: "#", logo: "https://placehold.co/120x40/1a2035/00CED1?text=TIVIBU+4" },
+            { name: "A SPOR", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=A+SPOR" },
+            { name: "A HABER", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=A+HABER" },
+            { name: "TRT 1", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=TRT+1" },
+            { name: "TRT SPOR", link: "#", logo: "https://placehold.co/120x40/1a2035/FFF?text=TRT+SPOR" }
+        ];
+
+        const grid = document.getElementById('channelGrid');
+
+        channels.forEach(channel => {
+            const card = document.createElement('a');
+            card.href = channel.link;
+            card.className = 'channel-card';
+            card.innerHTML = `
+                <span class="live-badge">CANLI</span>
+                <img src="${channel.logo}" alt="${channel.name}" class="channel-logo">
+                <div class="channel-name">${channel.name}</div>
+            `;
+            grid.appendChild(card);
+        });
+    </script>
+</body>
+</html>
